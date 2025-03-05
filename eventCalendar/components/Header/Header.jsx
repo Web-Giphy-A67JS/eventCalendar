@@ -53,12 +53,14 @@ export default function Header() {
         {user && userData && userData.role === Roles.admin && (
           <>
             <NavLink to="/user-profile" className="nav-link">My Profile</NavLink>
+            <NavLink to="/calendar" className="nav-link">Calendar</NavLink>
             <NavLink to="/admin-tools" className="nav-link">Admin Tools</NavLink>
           </>
         )}
         {user && userData && userData.role === Roles.user && (
           <>
             <NavLink to="/user-profile" className="nav-link">My Profile</NavLink>
+            <NavLink to="/calendar" className="nav-link">Calendar</NavLink>
           </>
         )}
         {!user && <NavLink to="/login" className="nav-link">Log in</NavLink>}

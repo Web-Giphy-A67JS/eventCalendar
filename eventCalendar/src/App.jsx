@@ -14,6 +14,7 @@ import Profile from '../components/Profile/Profile';
 import './App.css';
 import BannedUser from "../components/BannedUser/BannedUser";
 import AdminTools from "./views/AdminTools/AdminTools";
+import Calendar from "./views/Calendar/Calendar";
 import './App.css'
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/user-profile" element={<Authenticated><Profile /></Authenticated>} />
+          <Route path="/calendar" element={<Authenticated><Calendar /></Authenticated>} />
           <Route path="/admin-tools" element={<Authenticated><AdminTools /></Authenticated>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
