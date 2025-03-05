@@ -107,6 +107,30 @@ export const getAllUsersByEmail = async (search='') => {
   return {};
 };
 
+export const getAllUsersByFirstName = async (search='') => {
+  const snapshot = await get(ref(db, 'users'));
+  if (snapshot.exists()) {
+    if(search){
+      const users = Object.values(snapshot.val());
+      return users.filter(user=>user.firstName.toLowerCase().includes(search.toLowerCase()))
+    }
+    return Object.values(snapshot.val());
+  }
+  return {};
+};
+
+export const getAllUsersByLastName = async (search='') => {
+  const snapshot = await get(ref(db, 'users'));
+  if (snapshot.exists()) {
+    if(search){
+      const users = Object.values(snapshot.val());
+      return users.filter(user=>user.lastName.toLowerCase().includes(search.toLowerCase()))
+    }
+    return Object.values(snapshot.val());
+  }
+  return {};
+};
+
 /**
  * Retrieves user data by Firebase UID
  * 

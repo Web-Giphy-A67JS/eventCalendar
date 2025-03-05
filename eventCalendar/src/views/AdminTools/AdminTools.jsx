@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllUsers, getAllUsersByEmail, updateUserRole } from "../../../services/user.services";
+import { getAllUsers, getAllUsersByEmail, updateUserRole, getAllUsersByFirstName, getAllUsersByLastName } from "../../../services/user.services";
 import { useSearchParams } from "react-router-dom";
 import { Roles } from "../../../common/roles.enum";
 
@@ -31,7 +31,14 @@ export default function AdminTools() {
           data = await getAllUsers();
         } else if (searchMethod === 'email') {
           data = await getAllUsersByEmail(search);
-        } else {
+        }
+        else if(searchMethod ==="firstname"){
+          data = await getAllUsersByFirstName(search);
+        }
+        else if(searchMethod ==="lastname"){
+          data = await getAllUsersByLastName(search);
+        }
+        else {
           data = await getAllUsers(search);
         }
         setUsers(data);
@@ -134,6 +141,28 @@ export default function AdminTools() {
               />
               <label htmlFor="email">Email</label>
             </div>
+            <div className="radio-option">
+              <input
+                type="radio"
+                name="method"
+                id="firstname"
+                value="firstname"
+                checked={searchMethod === 'firstname'}
+                onChange={(e) => setSearchParams({ method: e.target.value, search })}
+              />
+              <label htmlFor="firstname">First name</label>
+            </div>
+            <div className="radio-option">
+              <input
+                type="radio"
+                name="method"
+                id="lastname"
+                value="lastname"
+                checked={searchMethod === 'lastname'}
+                onChange={(e) => setSearchParams({ method: e.target.value, search })}
+              />
+              <label htmlFor="lastname">Last name</label>
+            </div>
           </div>
 
           <div className="search-input-wrapper">
@@ -153,6 +182,7 @@ export default function AdminTools() {
             <thead>
               <tr>
                 <th>Username</th>
+                <th>Full name</th>
                 <th>Email</th>
                 <th>Role</th>
                 <th>Actions</th>
@@ -162,6 +192,7 @@ export default function AdminTools() {
               {users.map((user) => (
                 <tr key={user.uid}>
                   <td>{user.handle}</td>
+                  <td>{user.firstName} {user.lastName}</td>
                   <td>{user.email}</td>
                   <td>
                     <span className={`user-badge ${getRoleBadgeClass(user.role)}`}>
