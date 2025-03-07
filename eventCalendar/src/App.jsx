@@ -11,11 +11,10 @@ import { getUserData } from '../services/user.services';
 import NotFound from '../components/NotFound/NotFound';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Profile from '../components/Profile/Profile';
-import './App.css';
 import BannedUser from "../components/BannedUser/BannedUser";
 import AdminTools from "./views/AdminTools/AdminTools";
 import Calendar from "./views/Calendar/Calendar";
-import './App.css'
+
 
 function App() {
   const [appState, setAppState] = useState({
@@ -51,6 +50,7 @@ function App() {
     <BrowserRouter>
       <AppContext.Provider value = {{...appState, setAppState}}> 
         <Header></Header>
+        <main className="flex items-center justify-center min-h-screen pt-16 bg-gray-300 text-black"> {/* here we can edit basic common characteristics of all components(bg color, alignment, etc.) */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/user-profile" element={<Authenticated><Profile /></Authenticated>} />
@@ -61,6 +61,7 @@ function App() {
           <Route path="/banned" element={<Authenticated><BannedUser /></Authenticated>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </main>
       </AppContext.Provider>
     </BrowserRouter>
   );

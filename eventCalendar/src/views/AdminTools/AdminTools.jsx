@@ -3,26 +3,13 @@ import { getAllUsers, getAllUsersByEmail, updateUserRole, getAllUsersByFirstName
 import { useSearchParams } from "react-router-dom";
 import { Roles } from "../../../common/roles.enum";
 
-/**
- * Admin tools component for user management
- * 
- * Provides interface for administrators to search, view, and manage users
- * including the ability to ban/unban users
- * 
- * @returns {JSX.Element} Admin dashboard interface
- */
 export default function AdminTools() {
   const [users, setUsers] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [notifications, setNotifications] = useState([]);
+  const [notification, setNotification] = useState(null);
   const search = searchParams.get('search') || '';
   const searchMethod = searchParams.get('method') || 'username';
 
-/**
- * Fetches and filters users based on search parameters
- * 
- * @effect Loads users filtered by search term and method (username/email)
- */
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -31,50 +18,36 @@ export default function AdminTools() {
           data = await getAllUsers();
         } else if (searchMethod === 'email') {
           data = await getAllUsersByEmail(search);
-        }
-        else if(searchMethod ==="firstname"){
+        } else if (searchMethod === "firstname") {
           data = await getAllUsersByFirstName(search);
-        }
-        else if(searchMethod ==="lastname"){
+        } else if (searchMethod === "lastname") {
           data = await getAllUsersByLastName(search);
-        }
-        else {
+        } else {
           data = await getAllUsers(search);
         }
         setUsers(data);
       } catch (error) {
-        showNotification('Error', error.message, 'error');
+        setNotification({
+          message: error.message,
+          type: 'error'
+        });
       }
     };
-
+  
     fetchUsers();
-  }, [search, searchMethod]);
+  }, [search, searchMethod]);  // Triggers when search or searchMethod changes
+  
+  
+  // Effect to clear the notification after 5 seconds
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);  // Clear the notification
+      }, 5000);
+      return () => clearTimeout(timer);  // Cleanup the timer if notification changes
+    }
+  }, [notification]);
 
-/**
- * Creates and manages temporary notifications
- * 
- * @param {string} title - Notification title
- * @param {string} message - Notification message
- * @param {string} type - Notification type ('success' or 'error')
- */
-  const showNotification = (title, message, type = 'success') => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, title, message, type }]);
-    setTimeout(() => {
-      setNotifications(prev => prev.map(notif => 
-        notif.id === id ? { ...notif, closing: true } : notif
-      ));
-      setTimeout(() => {
-        setNotifications(prev => prev.filter(notif => notif.id !== id));
-      }, 300);
-    }, 5000);
-  };
-
-/**
- * Toggles user ban status
- * 
- * @param {string} uid - User ID to ban/unban
- */
   const handleBan = async (uid) => {
     try {
       const user = users.find((u) => u.uid === uid);
@@ -85,41 +58,50 @@ export default function AdminTools() {
           user.uid === uid ? { ...user, role: newRole } : user
         )
       );
-      showNotification(
-        'Success',
-        `User ${user.handle} has been ${newRole === Roles.banned ? 'banned' : 'unbanned'}`
-      );
+      setNotification({
+        message: `User ${user.handle} has been ${newRole === Roles.banned ? 'banned' : 'unbanned'}`,
+        type: 'success'
+      });
     } catch (error) {
-      showNotification('Error', error.message, 'error');
+      setNotification({
+        message: error.message,
+        type: 'error'
+      });
     }
   };
 
-/**
- * Determines CSS class for role badge
- * 
- * @param {string} role - User role
- * @returns {string} CSS class name for styling
- */
   const getRoleBadgeClass = (role) => {
     switch (role) {
       case Roles.admin:
-        return 'badge-admin';
+        return 'badge badge-success';
       case Roles.banned:
-        return 'badge-banned';
+        return 'badge badge-error';
       default:
-        return 'badge-user';
+        return 'badge badge-primary';
     }
   };
 
   return (
-    <div className="admin-container">
-      <h1 className="admin-title">Admin Tools</h1>
-      <p className="admin-description">Manage users and their roles from this dashboard.</p>
+    <div>
+      <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6">Admin Tools</h1>
+      <p className="text-lg text-center mb-6 text-gray-600">Manage users and their roles from this dashboard.</p>
 
-      <div className="admin-card">
-        <div className="search-controls">
-          <div className="search-radio-group">
-            <div className="radio-option">
+      {/* Notification Toast */}
+      {notification && (
+        <div
+          className={`toast-center ${notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'} p-4 rounded-lg shadow-lg fixed top-16 left-1/2 transform -translate-x-1/2`}
+        >
+          <div className="flex items-center">
+            <span className="font-bold">{notification.type === 'success' ? 'Success' : 'Error'}</span>
+            <span className="ml-2">{notification.message}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-white shadow-md p-6 rounded-lg mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
               <input
                 type="radio"
                 name="method"
@@ -127,10 +109,11 @@ export default function AdminTools() {
                 value="username"
                 checked={searchMethod === 'username'}
                 onChange={(e) => setSearchParams({ method: e.target.value, search })}
+                className="radio radio-primary"
               />
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username" className="font-medium text-gray-700">Username</label>
             </div>
-            <div className="radio-option">
+            <div className="flex items-center space-x-2">
               <input
                 type="radio"
                 name="method"
@@ -138,10 +121,11 @@ export default function AdminTools() {
                 value="email"
                 checked={searchMethod === 'email'}
                 onChange={(e) => setSearchParams({ method: e.target.value, search })}
+                className="radio radio-primary"
               />
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="font-medium text-gray-700">Email</label>
             </div>
-            <div className="radio-option">
+            <div className="flex items-center space-x-2">
               <input
                 type="radio"
                 name="method"
@@ -149,10 +133,11 @@ export default function AdminTools() {
                 value="firstname"
                 checked={searchMethod === 'firstname'}
                 onChange={(e) => setSearchParams({ method: e.target.value, search })}
+                className="radio radio-primary"
               />
-              <label htmlFor="firstname">First name</label>
+              <label htmlFor="firstname" className="font-medium text-gray-700">First name</label>
             </div>
-            <div className="radio-option">
+            <div className="flex items-center space-x-2">
               <input
                 type="radio"
                 name="method"
@@ -160,81 +145,63 @@ export default function AdminTools() {
                 value="lastname"
                 checked={searchMethod === 'lastname'}
                 onChange={(e) => setSearchParams({ method: e.target.value, search })}
+                className="radio radio-primary"
               />
-              <label htmlFor="lastname">Last name</label>
+              <label htmlFor="lastname" className="font-medium text-gray-700">Last name</label>
             </div>
           </div>
 
-          <div className="search-input-wrapper">
-            <i className="search-icon">🔍</i>
+          <div className="flex items-center space-x-4">
             <input
               type="text"
-              className="search-input"
+              className="input input-bordered input-primary w-full max-w-xs ml-2 bg-white"
               placeholder={`Search by ${searchMethod}...`}
               value={search}
               onChange={(e) => setSearchParams({ method: searchMethod, search: e.target.value })}
             />
+            <i className="text-lg text-gray-500">🔍</i>
           </div>
         </div>
 
         {users.length > 0 ? (
-          <table className="users-table">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Full name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user) => (
-                <tr key={user.uid}>
-                  <td>{user.handle}</td>
-                  <td>{user.firstName} {user.lastName}</td>
-                  <td>{user.email}</td>
-                  <td>
-                    <span className={`user-badge ${getRoleBadgeClass(user.role)}`}>
-                      {user.role}
-                    </span>
-                  </td>
-                  <td>
-                    <button
-                      className={`action-button ${user.role === Roles.banned ? 'unban-button' : 'ban-button'}`}
-                      onClick={() => handleBan(user.uid)}
-                    >
-                      {user.role === Roles.banned ? 'Unban' : 'Ban'}
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="table w-full table-striped">
+              <thead>
+                <tr className="bg-indigo-100 text-indigo-700">
+                  <th>Username</th>
+                  <th>Full name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="admin-description">No users found with this {searchMethod}</p>
-        )}
-      </div>
-
-      <div className="notification-container">
-        {notifications.map(({ id, title, message, type, closing }) => (
-          <div key={id} className={`notification${closing ? ' closing' : ''}`}>
-            <div className={`notification-icon ${type}`}>
-              {type === 'success' ? '✓' : '✕'}
-            </div>
-            <div className="notification-content">
-              <div className={`notification-title ${type}`}>{title}</div>
-              <div className="notification-message">{message}</div>
-            </div>
-            <button
-              className="notification-close"
-              onClick={() => setNotifications(prev => prev.filter(n => n.id !== id))}
-            >
-              ✕
-            </button>
-            <div className="notification-progress" />
+              </thead>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.uid}>
+                    <td>{user.handle}</td>
+                    <td>{user.firstName} {user.lastName}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      <span className={getRoleBadgeClass(user.role)}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className={`btn ${user.role === Roles.banned ? 'btn-success' : 'btn-error'}`}
+                        onClick={() => handleBan(user.uid)}
+                      >
+                        {user.role === Roles.banned ? 'Unban' : 'Ban'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        ) : (
+          <p className="text-center text-gray-600 mt-4">No users found with this {searchMethod}</p>
+        )}
       </div>
     </div>
   );

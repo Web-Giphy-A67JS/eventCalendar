@@ -39,13 +39,13 @@ const Calendar = () => {
         <div className="space-x-2">
           <button 
             onClick={() => navigateMonth('prev')}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded"
+            className="btn btn-ghost"
           >
             Previous
           </button>
-          <button 
+          <button
             onClick={() => navigateMonth('next')}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded"
+            className="btn btn-ghost"
           >
             Next
           </button>

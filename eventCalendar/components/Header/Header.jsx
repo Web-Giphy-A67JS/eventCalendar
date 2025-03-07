@@ -1,25 +1,12 @@
+// filepath: src/components/Header/Header.jsx
 import { NavLink, useNavigate } from "react-router-dom";
 import { AppContext } from "../../src/store/app.context";
 import { useContext } from "react";
 import { logoutUser } from "../../services/auth.services";
 import { Roles } from "../../common/roles.enum";
 
-/**
- * Header component that displays navigation based on user authentication and role
- * 
- * Renders different navigation options depending on:
- * - Whether user is logged in
- * - User's role (admin, regular user, or banned)
- * 
- * Banned users see only the logo and logout button
- * Admin users see all navigation options including admin tools
- * Regular users see standard navigation without admin tools
- * Non-authenticated users see only login and register options
- * 
- * @returns {JSX.Element} Header component with conditional navigation
- */
 export default function Header() {
-  const { user, userData, setAppState } = useContext(AppContext)
+  const { user, userData, setAppState } = useContext(AppContext);
   const navigate = useNavigate();
 
   const logout = () => {
@@ -29,46 +16,49 @@ export default function Header() {
           user: null,
           userData: null,
         });
-        navigate('/')
+        navigate('/');
       })
-      .catch((error) => console.error(error.message))
-  }
-
-  if (userData?.role === Roles.banned) {
-    return (
-      <header className="navbar">
-        <h1 className="logo">Event Calendar</h1>
-        <div className="user-section">
-          {user && <button className="logout-btn" onClick={logout}>Log Out</button>}
-        </div>
-      </header>
-    );
-  }
+      .catch((error) => console.error(error.message));
+  };
 
   return (
-    <header className="navbar">
-      <h1 className="logo">Event Calendar</h1>
-      <nav className="nav-links">
-        <NavLink to="/" className="nav-link">Home</NavLink>
-        {user && userData && userData.role === Roles.admin && (
-          <>
-            <NavLink to="/user-profile" className="nav-link">My Profile</NavLink>
-            <NavLink to="/calendar" className="nav-link">Calendar</NavLink>
-            <NavLink to="/admin-tools" className="nav-link">Admin Tools</NavLink>
-          </>
-        )}
-        {user && userData && userData.role === Roles.user && (
-          <>
-            <NavLink to="/user-profile" className="nav-link">My Profile</NavLink>
-            <NavLink to="/calendar" className="nav-link">Calendar</NavLink>
-          </>
-        )}
-        {!user && <NavLink to="/login" className="nav-link">Log in</NavLink>}
-        {!user && <NavLink to="/register" className="nav-link">Register</NavLink>}
-      </nav>
-      <div className="user-section">
-        {userData && <span className="welcome-text">Welcome, {userData.handle}</span>}
-        {user && <button className="logout-btn" onClick={logout}>Log Out</button>}
+    <header className="navbar bg-white text-black shadow-sm fixed top-0 left-0 right-0 z-50 h-30">
+      <div className="flex justify-between w-full">
+        <div className="flex-1">
+          <a className="btn btn-ghost text-xl">Event Calendar</a>
+        </div>
+        <div className="flex items-center space-x-4">
+          {userData?.role === Roles.banned ? (
+            <div className="user-section">
+              {user && <button className="btn btn-error" onClick={logout}>Log Out</button>}
+            </div>
+          ) : (
+            <>
+              <nav className="menu menu-horizontal p-0">
+                <NavLink to="/" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Home</NavLink>
+                {user && userData && userData.role === Roles.admin && (
+                  <>
+                    <NavLink to="/user-profile" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">My Profile</NavLink>
+                    <NavLink to="/calendar" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Calendar</NavLink>
+                    <NavLink to="/admin-tools" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Admin Tools</NavLink>
+                  </>
+                )}
+                {user && userData && userData.role === Roles.user && (
+                  <>
+                    <NavLink to="/user-profile" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">My Profile</NavLink>
+                    <NavLink to="/calendar" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Calendar</NavLink>
+                  </>
+                )}
+                {!user && <NavLink to="/login" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Log in</NavLink>}
+                {!user && <NavLink to="/register" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Register</NavLink>}
+              </nav>
+              <div className="flex items-center space-x-4">
+                {userData && <span className="welcome-text">Welcome, {userData.handle}</span>}
+                {user && <button className="btn btn-error" onClick={logout}>Log Out</button>}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );
