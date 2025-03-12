@@ -1,6 +1,5 @@
-// filepath: src/views/CreateEvent/CreateEvent.jsx
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { createEvent } from "../../../services/event.services";
 import { AppContext } from "../../store/app.context";
 import AddParticipantsModal from "../AddParticipants/AddParticipants";
@@ -8,9 +7,11 @@ import { getAllUsers } from "../../../services/user.services";
 
 export default function CreateEvent() {
   const { user } = useContext(AppContext);
+  const [searchParams] = useSearchParams();
+  const startDateFromParams = searchParams.get("startDate");
   const [event, setEvent] = useState({
     title: "",
-    startDate: "",
+    startDate: startDateFromParams ? `${startDateFromParams}T00:00` : "",
     endDate: "",
     description: "",
     participants: [user.uid], // Initialize with the creator's user ID
@@ -73,7 +74,7 @@ export default function CreateEvent() {
     <div className="pt-16 pb-10">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full sm:w-96 max-w-sm">
         <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Create Event</h2>
-        
+
         <form onSubmit={handleCreateEvent} className="space-y-6">
           {/* Title */}
           <div className="form-group">
