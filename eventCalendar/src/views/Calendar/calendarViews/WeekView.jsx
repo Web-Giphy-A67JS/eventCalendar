@@ -3,7 +3,7 @@
  * Displays events for a week.
  */
 import React from 'react';
-import { startOfWeek, endOfWeek, eachDayOfInterval, format } from 'date-fns';
+import { startOfWeek, endOfWeek, eachDayOfInterval, format, isSameDay } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
 
 /**
@@ -33,7 +33,9 @@ const WeekView = ({ currentDate, events }) => {
         return (
           <div
             key={day.toString()}
-            className="week-view__day border p-2 h-32 overflow-auto bg-white rounded shadow-md cursor-pointer"
+            className={`week-view__day border p-2 h-32 overflow-auto bg-white rounded shadow-md cursor-pointer ${
+              isSameDay(day, new Date()) ? 'bg-yellow-100' : ''
+            }`}
             onClick={() => handleDayContainerClick(day)}
           >
             <div className="week-view__day-header text-sm font-semibold">{format(day, 'EEE d')}</div>
