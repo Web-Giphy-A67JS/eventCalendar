@@ -14,6 +14,7 @@ import Profile from '../components/Profile/Profile';
 import BannedUser from "../components/BannedUser/BannedUser";
 import AdminTools from "./views/AdminTools/AdminTools";
 import Calendar from "./views/Calendar/Calendar";
+import CreateEvent from "./views/CreateEvent/CreateEvent"
 
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/user-profile" element={<Authenticated><Profile /></Authenticated>} />
           <Route path="/calendar" element={<Authenticated><Calendar /></Authenticated>} />
+          <Route path="/create-event" element={<Authenticated><CreateEvent /></Authenticated>} />
           <Route path="/admin-tools" element={<Authenticated><AdminTools /></Authenticated>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

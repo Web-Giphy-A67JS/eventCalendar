@@ -1,10 +1,13 @@
+import { use } from 'react';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(null);
   const [animationClass, setAnimationClass] = useState('');
   
+  const navigate = useNavigate();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const today = currentDate.getDate();
@@ -14,13 +17,16 @@ const Calendar = () => {
 
   const matrix = generateCalendarMatrix(year, month);
 
+  const handleNewEventClick=()=>{
+     navigate('/create-event');
+  }
+
   const handleDayClick = (day, isCurrentMonth) => {
     if (isCurrentMonth) {
       setSelectedDay(day);
     }
   };
 
-  // Navigation handlers
   const navigateMonth = (direction) => {
     setAnimationClass(direction === 'prev' ? 'slide-left' : 'slide-right');
     setTimeout(() => {
@@ -48,6 +54,12 @@ const Calendar = () => {
             className="btn btn-ghost"
           >
             Next
+          </button>
+          <button
+            className="btn btn-primary ml-4"
+            onClick={handleNewEventClick}
+          >
+            New Event
           </button>
         </div>
       </div>
