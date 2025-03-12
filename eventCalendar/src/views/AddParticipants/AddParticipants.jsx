@@ -12,6 +12,16 @@ export default function AddParticipantsModal({ isOpen, onClose, onAddParticipant
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    // Ensure the creator is always in the selected users list
+    if (!selectedUsers.some((u) => u.uid === creatorId)) {
+      const creator = users.find((user) => user.uid === creatorId);
+      if (creator) {
+        setSelectedUsers((prevSelected) => [...prevSelected, creator]);
+      }
+    }
+  }, [users, creatorId, selectedUsers]);
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
