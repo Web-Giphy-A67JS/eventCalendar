@@ -1,7 +1,7 @@
 import { ref, push, get, remove, update } from "firebase/database";
 import { db } from "../src/config/firebase.config";
 
-export const createEvent = async (title, startDate, endDate, description, participants) => {
+export const createEvent = async (title, startDate, endDate, description, participants, isPrivate) => {
     try {
       const eventsRef = ref(db, "events");
       await push(eventsRef, {
@@ -10,6 +10,7 @@ export const createEvent = async (title, startDate, endDate, description, partic
         endDate,
         description,
         participants,
+        private: isPrivate
       });
       console.log("The event was created successfully!");
     } catch (error) {

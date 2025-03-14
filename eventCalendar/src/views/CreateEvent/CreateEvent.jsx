@@ -6,6 +6,7 @@ import AddParticipantsModal from "../AddParticipants/AddParticipants";
 import { getAllUsers } from "../../../services/user.services";
 
 export default function CreateEvent() {
+  const [isPrivate, setIsPrivate] = useState(false);
   const { user } = useContext(AppContext);
   const [searchParams] = useSearchParams();
   const startDateFromParams = searchParams.get("startDate");
@@ -46,7 +47,7 @@ export default function CreateEvent() {
     }
 
     try {
-      await createEvent(event.title, event.startDate, event.endDate, event.description, event.participants);
+      await createEvent(event.title, event.startDate, event.endDate, event.description, event.participants, isPrivate);
       alert('Event created successfully!');
       navigate("/calendar");
     } catch (err) {
@@ -147,6 +148,19 @@ export default function CreateEvent() {
               />
               <span className="absolute top-1/2 right-5 transform -translate-y-1/2 text-gray-500">📝</span>
             </div>
+          </div>
+          {/* Private event setting */}
+          <div className="form-group flex items-center">
+            <label className="block text-lg font-medium text-gray-700 mr-2" htmlFor="private">
+              Private
+            </label>
+            <input
+              type="checkbox"
+              id="private"
+              checked={isPrivate}
+              className="form-checkbox text-indigo-600 focus:ring-indigo-500"
+              onChange={(e) => setIsPrivate(e.target.checked)}
+            />
           </div>
 
           {/* Current Participants */}
