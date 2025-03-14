@@ -24,8 +24,8 @@ export default function Header() {
   return (
     <header className="navbar bg-white text-black shadow-sm fixed top-0 left-0 right-0 z-50 h-30">
       <div className="flex justify-between w-full">
-        <div className="flex-1">
-          <a className="btn btn-ghost text-xl">Event Calendar</a>
+        <div className="flex-1 flex items-center">
+          <NavLink to="/" className="text-bold font-bold text-2xl ml-5">Event Calendar</NavLink>
         </div>
         <div className="flex items-center space-x-4">
           {userData?.role === Roles.banned ? (
@@ -35,7 +35,6 @@ export default function Header() {
           ) : (
             <>
               <nav className="menu menu-horizontal p-0">
-                <NavLink to="/" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Home</NavLink>
                 {user && userData && userData.role === Roles.admin && (
                   <>
                     <NavLink to="/user-profile" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">My Profile</NavLink>
