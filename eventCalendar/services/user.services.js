@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, remove, push, getDatabase } from 'firebase/database';
 import { db } from '../src/config/firebase.config';
 
 /**
@@ -80,13 +80,17 @@ export const getTotalUsers = async () => {
 export const getAllUsers = async (search='') => {
   const snapshot = await get(ref(db, 'users'));
   if (snapshot.exists()) {
-    if(search){
-      const users = Object.values(snapshot.val());
-      return users.filter(user=>user.handle.toLowerCase().includes(search.toLowerCase()))
+    const users = Object.values(snapshot.val()).map(user => ({
+      ...user,
+      id: user.uid, 
+    }));
+
+    if (search) {
+      return users.filter(user => user.handle.toLowerCase().includes(search.toLowerCase()));
     }
-    return Object.values(snapshot.val());
+    return users;
   }
-  return {};
+  return [];
 };
 
 /**
@@ -185,3 +189,69 @@ export const getUserByPhone = async (phone) => {
     }
     return null;
   };
+  export const createContactList = async (userId, listName) => {
+    const listRef = push(ref(db, "contactLists"));
+
+    const newList = {
+        id: listRef.key,
+        owner: userId,
+        name: listName,
+        contacts: []
+    };
+
+    await set(listRef, newList);
+    return newList;
+};
+
+export const addContactToList = async (listId, contactId) => {
+    const listRef = ref(db, `contactLists/${listId}/contacts`);
+
+    const snapshot = await get(listRef);
+    let contacts = snapshot.exists() ? snapshot.val() : [];
+
+    if (!contacts.includes(contactId)) {
+        contacts.push(contactId);
+        await set(listRef, contacts);
+    }
+};
+
+export const getUserContactLists = async (userId) => {
+    try {
+        const snapshot = await get(ref(db, "contactLists"));
+        if (snapshot.exists()) {
+            const lists = snapshot.val();
+            return Object.values(lists).filter(list => list.owner === userId);
+        }
+        return [];
+    } catch (error) {
+        console.error("Error fetching contact lists:", error);
+        return [];
+    }
+};
+
+export const updateContactList = async (listId, updatedData) => {
+    try {
+        await update(ref(db, `contactLists/${listId}`), updatedData);
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating contact list:", error);
+        return { success: false, error };
+    }
+};
+
+export const deleteContactList = async (listId) => {
+    const listRef = ref(db, `contactLists/${listId}`);
+    await remove(listRef);
+};
+
+export const removeContactFromList = async (listId, contactEmail) => {
+  const listRef = ref(db, `contactLists/${listId}/contacts`);
+  const snapshot = await get(listRef);
+  
+  if (snapshot.exists()) {
+    let contacts = snapshot.val();
+    contacts = contacts.filter(contact => contact.email !== contactEmail);
+    
+    await set(listRef, contacts);
+  }
+};
