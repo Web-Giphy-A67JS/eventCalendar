@@ -47,6 +47,7 @@ export default function Header() {
                   <>
                     <NavLink to="/user-profile" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">My Profile</NavLink>
                     <NavLink to="/calendar" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Calendar</NavLink>
+                    <NavLink to="/contact-list" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Contact List</NavLink>
                   </>
                 )}
                 {!user && <NavLink to="/login" className="nav-link btn btn-ghost bg-transparent hover:bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:text-white mr-4">Log in</NavLink>}

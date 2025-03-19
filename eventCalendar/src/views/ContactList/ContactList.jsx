@@ -173,7 +173,7 @@ const ContactList = ({ user }) => {
                 placeholder="New List Name"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
-                className="block p-2 border border-gray-300 rounded w-full mt-2"
+                className="block p-2 border border-gray-300 rounded w-full mt-2 bg-white"
               />
               <button
                 onClick={handleUpdateListName}
