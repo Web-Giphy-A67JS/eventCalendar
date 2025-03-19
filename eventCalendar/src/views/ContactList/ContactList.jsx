@@ -202,7 +202,7 @@ const ContactList = ({ user }) => {
           <select
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="block p-2 border border-gray-300 rounded w-full mt-2"
+            className="block p-2 border border-gray-300 rounded w-full mt-2 bg-white"
           >
             <option value="">Select an existing user</option>
             {existingUsers.map((user) => (
