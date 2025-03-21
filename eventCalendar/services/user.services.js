@@ -1,4 +1,4 @@
-import { get, set, ref, query, equalTo, orderByChild, update, remove, push, getDatabase } from 'firebase/database';
+import { get, set, ref, query, equalTo, orderByChild, update, remove, push } from 'firebase/database';
 import { db } from '../src/config/firebase.config';
 
 /**
@@ -253,5 +253,15 @@ export const removeContactFromList = async (listId, contactEmail) => {
     contacts = contacts.filter(contact => contact.email !== contactEmail);
     
     await set(listRef, contacts);
+  }
+};
+export const getContactsFromList = async (listId) => {
+  try {
+      const listRef = ref(db, `contactLists/${listId}/contacts`);
+      const snapshot = await get(listRef);
+      return snapshot.exists() ? snapshot.val() : [];
+  } catch (error) {
+      console.error("Error fetching contacts from list:", error);
+      return [];
   }
 };
