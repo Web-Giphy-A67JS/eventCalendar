@@ -76,7 +76,7 @@ export default function AddParticipantsModal({ isOpen, onClose, onAddParticipant
 
     <input
       type="text"
-      className="form-input w-full p-2 border border-gray-300 rounded-lg mb-3"
+      className="form-input w-full p-2 border border-gray-300 rounded-lg mb-3 bg-white"
       placeholder="Search for users"
       value={searchTerm}
       onChange={handleSearchChange}
@@ -86,7 +86,7 @@ export default function AddParticipantsModal({ isOpen, onClose, onAddParticipant
       <div>
         <h3 className="text-sm font-semibold mb-2">Invite from Contact List</h3>
         <select 
-          className="form-select w-full p-2 border border-gray-300 rounded-lg mb-2"
+          className="form-select w-full p-2 border border-gray-300 rounded-lg mb-2 bg-white"
           onChange={(e) => handleSelectContactList(e.target.value)}
         >
           <option value="">Select Contact List</option>
