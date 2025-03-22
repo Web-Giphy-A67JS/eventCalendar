@@ -18,12 +18,23 @@ export const createEvent = async (title, startDate, endDate, description, partic
     }
   };
 
-//   Events must have an id, title, a start date and hour, an end date and hour, and a list of invited participants (the list should contain only the event creator if it’s a private event with no other participants).
+  export const fetchEvents = async () => {
+    const snapshot = await get(ref(db, "events"));
+    if (snapshot.exists()) {
+      return Object.entries(snapshot.val()).map(([id, event]) => ({
+        id,
+        ...event,
+      }));
+    }
+    return [];
+  };
 
-// o Title must be between 3 and 30 symbols.
-
-// o An event must have at least one participant (the creator).
-
-// o Events must have an option to be a part of a series of reoccurring events.
-
-// o Events should be public or private.
+  export const removeEvent = async (eventId) => {
+    try {
+      const eventRef = ref(db, `events/${eventId}`);
+      await remove(eventRef);
+      console.log(`Event with ID ${eventId} was successfully deleted.`);
+    } catch (error) {
+      console.error(`Error deleting event with ID ${eventId}:`, error);
+    }
+  };

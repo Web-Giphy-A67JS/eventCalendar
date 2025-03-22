@@ -107,7 +107,7 @@ export default function Profile() {
 
   return (
     <div >
-      <div className="bg-white shadow-xl rounded-lg max-w-lg w-full p-6 space-y-6 w-96">
+      <div className="p-8 mx-auto bg-gray-50 rounded-lg shadow-lg min-h-[400px] w-[350px]">
         <div className="flex justify-center">
           <div className="relative">
             {state.profilePicture ? (

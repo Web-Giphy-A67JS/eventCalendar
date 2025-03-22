@@ -16,6 +16,7 @@ import AdminTools from "./views/AdminTools/AdminTools";
 import Calendar from "./views/Calendar/Calendar";
 import CreateEvent from "./views/CreateEvent/CreateEvent";
 import ContactList from "./views/ContactList/ContactList";
+import Events from "./views/Events/Events"
 
 function App() {
   const [appState, setAppState] = useState({
@@ -56,6 +57,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/user-profile" element={<Authenticated><Profile /></Authenticated>} />
           <Route path="/calendar" element={<Authenticated><Calendar /></Authenticated>} />
+          <Route path="/events" element={<Events />} />
           <Route path="/create-event" element={<Authenticated><CreateEvent /></Authenticated>} />
           <Route path="/contact-list" element={appState.user ? (<Authenticated><ContactList user={appState.user} /></Authenticated>) : (<p>No user logged in.</p>)}/>
           <Route path="/admin-tools" element={<Authenticated><AdminTools /></Authenticated>} />
