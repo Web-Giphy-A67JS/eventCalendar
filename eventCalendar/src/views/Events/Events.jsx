@@ -8,7 +8,7 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [view, setView] = useState("allEvents"); // Default to "All Events"
+  const [view, setView] = useState("allEvents");
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -29,7 +29,7 @@ export default function Events() {
           )
         : events.filter(
             (event) =>
-              (!user && !event.private) || // Unregistered users see only public events
+              (!user && !event.private) ||
               (userData?.role === Roles.admin || !event.private) &&
               event.title.toLowerCase().includes(searchTerm.toLowerCase())
           );
@@ -42,18 +42,16 @@ export default function Events() {
       "Are you sure you want to delete this event?"
     );
     if (confirmDelete) {
-      await removeEvent(eventId); // Call the service to delete the event
+      await removeEvent(eventId);
       setEvents((prevEvents) =>
         prevEvents.filter((event) => event.id !== eventId)
-      ); // Update local state
+      );
     }
   };
 
   return (
     <div className="p-8 mx-auto bg-gray-50 rounded-lg shadow-lg min-h-[700px] w-[1000px]">
-      {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
-        {/* Buttons */}
         <div className="flex space-x-4">
           {user && (
             <button
@@ -74,8 +72,6 @@ export default function Events() {
             All Events
           </button>
         </div>
-
-        {/* Search Bar */}
         <div className="w-full max-w-md">
           <input
             type="text"
@@ -86,8 +82,6 @@ export default function Events() {
           />
         </div>
       </div>
-
-      {/* Events List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event) => (
@@ -117,18 +111,13 @@ export default function Events() {
               >
                 {event.private ? "Private Event" : "Public Event"}
               </p>
-
-              {/* Buttons Section */}
               <div className="flex justify-between mt-4">
-                {/* Edit Button (visible to admins or participants) */}
                 {(userData?.role === Roles.admin ||
-                  event.participants.includes(user?.uid)) && (
+                  event.participants[0] === user?.uid) && (
                   <button className="btn btn-sm btn-outline btn-info">
                     Edit
                   </button>
                 )}
-
-                {/* Delete Button (visible to admins or the creator) */}
                 {(userData?.role === Roles.admin ||
                   event.participants[0] === user?.uid) && (
                   <button
