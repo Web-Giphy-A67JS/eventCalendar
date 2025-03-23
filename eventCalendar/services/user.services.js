@@ -255,6 +255,20 @@ export const removeContactFromList = async (listId, contactEmail) => {
     await set(listRef, contacts);
   }
 };
+
+/**
+ * Fetches all users and maps participant IDs to user objects
+ * 
+ * @param {Array<string>} participantIds - Array of participant UIDs
+ * @returns {Promise<Array>} Array of user objects
+ */
+export const getParticipantsDetails = async (participantIds) => {
+  const users = await getAllUsers();
+  return participantIds
+    .map((uid) => users.find((user) => user.uid === uid))
+    .filter(Boolean); // Filter out unmatched users
+};
+
 export const getContactsFromList = async (listId) => {
   try {
       const listRef = ref(db, `contactLists/${listId}/contacts`);

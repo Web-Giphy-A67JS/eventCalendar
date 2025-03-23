@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { AppContext } from "../../store/app.context";
 import { fetchEvents, removeEvent } from "../../../services/event.services";
 import { Roles } from "../../../common/roles.enum";
+import EditEvent from "../EditEvent/EditEvent";
 
 export default function Events() {
   const { user, userData } = useContext(AppContext);
@@ -9,6 +10,8 @@ export default function Events() {
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [view, setView] = useState("allEvents");
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false); 
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -47,6 +50,20 @@ export default function Events() {
         prevEvents.filter((event) => event.id !== eventId)
       );
     }
+  };
+
+  const handleEdit = (event) => {
+    setSelectedEvent(event); 
+    setIsEditModalOpen(true); 
+  };
+
+  const handleSaveChanges = (updatedEvent) => {
+    setEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === updatedEvent.id ? updatedEvent : event
+      )
+    );
+    setIsEditModalOpen(false); 
   };
 
   return (
@@ -114,7 +131,10 @@ export default function Events() {
               <div className="flex justify-between mt-4">
                 {(userData?.role === Roles.admin ||
                   event.participants[0] === user?.uid) && (
-                  <button className="btn btn-sm btn-outline btn-info">
+                  <button
+                    className="btn btn-sm btn-outline btn-info"
+                    onClick={() => handleEdit(event)}
+                  >
                     Edit
                   </button>
                 )}
@@ -136,6 +156,14 @@ export default function Events() {
           </div>
         )}
       </div>
+
+      {isEditModalOpen && selectedEvent && (
+        <EditEvent
+          event={selectedEvent}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleSaveChanges}
+        />
+      )}
     </div>
   );
 }

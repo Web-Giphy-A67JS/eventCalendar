@@ -29,6 +29,24 @@ export const createEvent = async (title, startDate, endDate, description, partic
     return [];
   };
 
+  /**
+ * Updates an event in the database
+ * 
+ * @param {string} eventId - Event ID
+ * @param {Object} updatedEvent - Updated event data
+ * @returns {Promise<void>}
+ */
+export const updateEvent = async (eventId, updatedEvent) => {
+  try {
+    const eventRef = ref(db, `events/${eventId}`);
+    await update(eventRef, updatedEvent);
+    console.log(`Event with ID ${eventId} updated successfully.`);
+  } catch (error) {
+    console.error(`Error updating event with ID ${eventId}:`, error);
+    throw error;
+  }
+};
+
   export const removeEvent = async (eventId) => {
     try {
       const eventRef = ref(db, `events/${eventId}`);
