@@ -4,7 +4,7 @@ import { createEvent, updateEvent, getEventById, generateRecurringDates } from "
 import { AppContext } from "../../store/app.context";
 import AddParticipantsModal from "../AddParticipants/AddParticipants";
 import { getAllUsers } from "../../../services/user.services";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import PropTypes from 'prop-types';
 
 export default function CreateEventPage() {
@@ -35,11 +35,15 @@ export default function CreateEventPage() {
   // Fetch event data for editing
   useEffect(() => {
     if (eventId) {
-      getEventById(eventId).then((eventData) => {
+      getEventById(eventId)
+        .then((eventData) => {
+          // Format startDate and endDate for datetime-local
+          const formattedStartDate = format(parseISO(eventData.startDate), "yyyy-MM-dd'T'HH:mm");
+          const formattedEndDate = format(parseISO(eventData.endDate), "yyyy-MM-dd'T'HH:mm");
         setEvent({
           title: eventData.title,
-          startDate: eventData.startDate,
-          endDate: eventData.endDate,
+          startDate: formattedStartDate,
+          endDate: formattedEndDate,
           description: eventData.description,
           participants: eventData.participants,
           private: eventData.private,
