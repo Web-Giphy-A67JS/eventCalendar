@@ -98,29 +98,70 @@ export const fetchEvents = async () => {
   return [];
 };
 
-export const updateEvent = async (eventId, updatedEvent) => {
+export const updateEvent = async (eventId, updatedEventData) => {
   try {
     const eventRef = ref(db, `events/${eventId}`);
     const snapshot = await get(eventRef);
-    const event = snapshot.val();
+    const originalEvent = snapshot.val();
 
-    if (event.seriesId) {
-      // Update all events in the series
-      const seriesQuery = query(ref(db, "events"), orderByChild("seriesId"), equalTo(event.seriesId));
+    if (!originalEvent) throw new Error("Event not found");
+
+    if (originalEvent.seriesId) {
+      // Calculate new duration
+      const newStartDate = new Date(updatedEventData.startDate);
+      const newEndDate = new Date(updatedEventData.endDate);
+      const newDurationMs = newEndDate - newStartDate;
+
+      // Use updated recurrence if provided, else keep original
+      const recurrence = updatedEventData.recurrence || originalEvent.recurrence;
+      const interval = recurrence.interval || 1; // e.g., every 1 week
+      const frequency = recurrence.frequency; // "weekly", "monthly", etc.
+
+      // Fetch all events in the series
+      const seriesQuery = query(ref(db, "events"), orderByChild("seriesId"), equalTo(originalEvent.seriesId));
       const seriesSnapshot = await get(seriesQuery);
+
       const updates = {};
+      let eventIndex = 0;
       seriesSnapshot.forEach((child) => {
-        updates[`events/${child.key}`] = updatedEvent;
+        const currentEvent = child.val();
+
+        // Calculate new start date based on recurrence
+        const timeOffset = eventIndex * interval * getFrequencyMs(frequency);
+        const newStartDateForEvent = new Date(newStartDate.getTime() + timeOffset);
+        const newEndDateForEvent = new Date(newStartDateForEvent.getTime() + newDurationMs);
+
+        // Prepare update
+        updates[`events/${child.key}`] = {
+          ...currentEvent,
+          startDate: newStartDateForEvent.toISOString(),
+          endDate: newEndDateForEvent.toISOString(),
+          title: updatedEventData.title,
+          description: updatedEventData.description,
+          recurrence: recurrence,
+        };
+        eventIndex++;
       });
       await update(ref(db), updates);
     } else {
-      // Update single event
-      await update(eventRef, updatedEvent);
+      // Single event update
+      await update(eventRef, updatedEventData);
     }
-    console.log(`Event with ID ${eventId} updated successfully.`);
+    console.log(`Event ${eventId} updated successfully.`);
   } catch (error) {
-    console.error(`Error updating event with ID ${eventId}:`, error);
+    console.error(`Error updating event ${eventId}:`, error);
     throw error;
+  }
+};
+
+// Helper to convert frequency to milliseconds
+const getFrequencyMs = (frequency) => {
+  switch (frequency) {
+    case "daily": return 1000 * 60 * 60 * 24;
+    case "weekly": return 1000 * 60 * 60 * 24 * 7;
+    case "monthly": return 1000 * 60 * 60 * 24 * 30; // Approx
+    case "yearly": return 1000 * 60 * 60 * 24 * 365; // Approx
+    default: throw new Error("Unknown frequency");
   }
 };
 
