@@ -11,7 +11,7 @@ const saveEventWithRetry = async (eventData, retries = 3) => {
       if (i === retries - 1) {
         throw new Error("Failed to save event after retries: " + error.message);
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1s before retry
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 };
@@ -30,7 +30,7 @@ export const createEvent = async (
 
   if (recurrence?.frequency) {
     const recurrenceEndDate = new Date(startDate);
-    recurrenceEndDate.setFullYear(recurrenceEndDate.getFullYear() + 1); // Default 1 year
+    recurrenceEndDate.setFullYear(recurrenceEndDate.getFullYear() + 1);
     const dates = generateRecurringDates(startDate, recurrence.frequency, recurrence.interval, recurrenceEndDate);
 
     const savePromises = dates.map((date) => {
@@ -107,17 +107,14 @@ export const updateEvent = async (eventId, updatedEventData) => {
     if (!originalEvent) throw new Error("Event not found");
 
     if (originalEvent.seriesId) {
-      // Calculate new duration
       const newStartDate = new Date(updatedEventData.startDate);
       const newEndDate = new Date(updatedEventData.endDate);
       const newDurationMs = newEndDate - newStartDate;
 
-      // Use updated recurrence if provided, else keep original
       const recurrence = updatedEventData.recurrence || originalEvent.recurrence;
-      const interval = recurrence.interval || 1; // e.g., every 1 week
-      const frequency = recurrence.frequency; // "weekly", "monthly", etc.
+      const interval = recurrence.interval || 1;
+      const frequency = recurrence.frequency;
 
-      // Fetch all events in the series
       const seriesQuery = query(ref(db, "events"), orderByChild("seriesId"), equalTo(originalEvent.seriesId));
       const seriesSnapshot = await get(seriesQuery);
 
@@ -126,12 +123,10 @@ export const updateEvent = async (eventId, updatedEventData) => {
       seriesSnapshot.forEach((child) => {
         const currentEvent = child.val();
 
-        // Calculate new start date based on recurrence
         const timeOffset = eventIndex * interval * getFrequencyMs(frequency);
         const newStartDateForEvent = new Date(newStartDate.getTime() + timeOffset);
         const newEndDateForEvent = new Date(newStartDateForEvent.getTime() + newDurationMs);
 
-        // Prepare update
         updates[`events/${child.key}`] = {
           ...currentEvent,
           startDate: newStartDateForEvent.toISOString(),
@@ -144,7 +139,6 @@ export const updateEvent = async (eventId, updatedEventData) => {
       });
       await update(ref(db), updates);
     } else {
-      // Single event update
       await update(eventRef, updatedEventData);
     }
     console.log(`Event ${eventId} updated successfully.`);
@@ -154,13 +148,12 @@ export const updateEvent = async (eventId, updatedEventData) => {
   }
 };
 
-// Helper to convert frequency to milliseconds
 const getFrequencyMs = (frequency) => {
   switch (frequency) {
     case "daily": return 1000 * 60 * 60 * 24;
     case "weekly": return 1000 * 60 * 60 * 24 * 7;
-    case "monthly": return 1000 * 60 * 60 * 24 * 30; // Approx
-    case "yearly": return 1000 * 60 * 60 * 24 * 365; // Approx
+    case "monthly": return 1000 * 60 * 60 * 24 * 30;
+    case "yearly": return 1000 * 60 * 60 * 24 * 365;
     default: throw new Error("Unknown frequency");
   }
 };
@@ -184,7 +177,6 @@ export const getEventById = async (eventId) => {
   return null;
 };
 
-// Added function to fetch user-specific events
 export const getUserEvents = async (userId) => {
   try {
     const snapshot = await get(ref(db, "events"));

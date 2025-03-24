@@ -1,4 +1,3 @@
-import React from "react";
 import { startOfWeek, addDays, format, isSameDay } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
@@ -19,7 +18,6 @@ const WorkWeekView = ({ currentDate, events }) => {
           const eventStartDate = new Date(event.startDate);
           const eventEndDate = new Date(event.endDate);
 
-          // Check if the event spans the current day
           return (
             day >= new Date(eventStartDate.getFullYear(), eventStartDate.getMonth(), eventStartDate.getDate()) &&
             day <= new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), eventEndDate.getDate())

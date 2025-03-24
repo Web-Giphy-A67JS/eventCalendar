@@ -9,18 +9,17 @@ import { AppContext } from '../../store/app.context';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedView, setSelectedView] = useState('month'); // Default view
+  const [selectedView, setSelectedView] = useState('month');
   const [animationClass, setAnimationClass] = useState('');
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
-  const { user } = useContext(AppContext); // Access the logged-in user
+  const { user } = useContext(AppContext);
   const userId = user?.uid;
 
   useEffect(() => {
     const loadEvents = async () => {
       try {
         const fetchedEvents = await fetchEvents();
-        // Filter events where the logged-in user is a participant
         const userEvents = fetchedEvents.filter((event) =>
           event.participants.includes(userId)
         );
@@ -83,13 +82,10 @@ const Calendar = () => {
                     currentDate.getMonth() === new Date().getMonth() &&
                     currentDate.getFullYear() === new Date().getFullYear();
 
-                  // Filter events that span multiple days and belong to the current month
                   const dayEvents = cell.isCurrentMonth
                     ? events.filter((event) => {
                         const eventStartDate = new Date(event.startDate);
                         const eventEndDate = new Date(event.endDate);
-
-                        // Normalize dates to midnight
                         const normalizedEventStartDate = new Date(
                           eventStartDate.getFullYear(),
                           eventStartDate.getMonth(),
@@ -107,9 +103,9 @@ const Calendar = () => {
                         );
 
                         return (
-                          cellDate.getTime() >= normalizedEventStartDate.getTime() && // Include the start date
-                          cellDate.getTime() <= normalizedEventEndDate.getTime() && // Include the end date
-                          cellDate.getMonth() === currentDate.getMonth() // Ensure it's in the current month
+                          cellDate.getTime() >= normalizedEventStartDate.getTime() && 
+                          cellDate.getTime() <= normalizedEventEndDate.getTime() && 
+                          cellDate.getMonth() === currentDate.getMonth() 
                         );
                       })
                     : [];
@@ -231,7 +227,6 @@ const Calendar = () => {
   );
 };
 
-// Matrix generator for the calendar
 const generateCalendarMatrix = (year, month) => {
   const firstDay = new Date(year, month, 1);
   const startDay = firstDay.getDay();
@@ -242,7 +237,6 @@ const generateCalendarMatrix = (year, month) => {
     .fill()
     .map(() => Array(7).fill().map(() => ({ day: null, isCurrentMonth: false })));
 
-  // Fill previous month
   for (let i = startDay - 1; i >= 0; i--) {
     matrix[0][i] = {
       day: daysInPrevMonth - (startDay - i - 1),
@@ -250,7 +244,6 @@ const generateCalendarMatrix = (year, month) => {
     };
   }
 
-  // Fill current month
   for (let day = 1; day <= daysInMonth; day++) {
     const index = startDay + day - 1;
     const row = Math.floor(index / 7);
@@ -258,7 +251,6 @@ const generateCalendarMatrix = (year, month) => {
     matrix[row][col] = { day, isCurrentMonth: true };
   }
 
-  // Fill next month
   let nextMonthDay = 1;
   for (let row = 0; row < 6; row++) {
     for (let col = 0; col < 7; col++) {

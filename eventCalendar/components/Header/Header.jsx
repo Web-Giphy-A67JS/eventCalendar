@@ -1,4 +1,3 @@
-// filepath: src/components/Header/Header.jsx
 import { NavLink, useNavigate } from "react-router-dom";
 import { AppContext } from "../../src/store/app.context";
 import { useContext } from "react";
