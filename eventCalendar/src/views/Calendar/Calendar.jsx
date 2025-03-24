@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DayView from './calendarViews/DayView';
-import WeekView from './calendarViews/WeekView'; // Fixed import typo
+import WeekView from './calendarViews/WeekView';
 import WorkWeekView from './calendarViews/WorkWeekView';
 import { format } from 'date-fns';
-import { fetchEvents } from '../../../services/event.services'; // Replace with your actual service
+import { fetchEvents } from '../../../services/event.services';
+import { AppContext } from '../../store/app.context';
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -12,19 +13,26 @@ const Calendar = () => {
   const [animationClass, setAnimationClass] = useState('');
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
+  const { user } = useContext(AppContext); // Access the logged-in user
+  const userId = user?.uid;
 
-  // Fetch events when the component mounts
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const fetchedEvents = await fetchEvents(); // Assume this returns events like [{ id, title, startDate, endDate }]
-        setEvents(fetchedEvents);
+        const fetchedEvents = await fetchEvents();
+        // Filter events where the logged-in user is a participant
+        const userEvents = fetchedEvents.filter((event) =>
+          event.participants.includes(userId)
+        );
+        setEvents(userEvents);
       } catch (error) {
         console.error('Failed to fetch events:', error);
       }
     };
-    loadEvents();
-  }, []);
+    if (userId) {
+      loadEvents();
+    }
+  }, [userId]);
 
   const navigateMonth = (direction) => {
     setAnimationClass(direction === 'prev' ? 'slide-left' : 'slide-right');
@@ -38,7 +46,7 @@ const Calendar = () => {
     if (isCurrentMonth) {
       const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const formattedDate = format(clickedDate, 'yyyy-MM-dd');
-      navigate(`/day-events?date=${formattedDate}`); // Updated to match DayEvents.jsx
+      navigate(`/day-events?date=${formattedDate}`);
     }
   };
 
@@ -58,45 +66,87 @@ const Calendar = () => {
       default:
         return (
           <div className={`calendar__month-view ${animationClass}`}>
-            <table className="calendar__table w-full border-collapse">
-              <thead>
-                <tr>
-                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                    <th key={day} className="calendar__day-header p-2 text-sm font-medium bg-gray-50">
-                      {day}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {generateCalendarMatrix(currentDate.getFullYear(), currentDate.getMonth()).map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, colIndex) => {
-                      const isToday =
-                        cell.isCurrentMonth &&
-                        cell.day === new Date().getDate() &&
-                        currentDate.getMonth() === new Date().getMonth() &&
-                        currentDate.getFullYear() === new Date().getFullYear();
+            <div className="grid grid-cols-7 gap-2 bg-gray-100 p-4 rounded-lg shadow-md">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                <div
+                  key={day}
+                  className="text-center font-semibold text-gray-700 uppercase text-sm"
+                >
+                  {day}
+                </div>
+              ))}
+              {generateCalendarMatrix(currentDate.getFullYear(), currentDate.getMonth()).map((row, rowIndex) =>
+                row.map((cell, colIndex) => {
+                  const isToday =
+                    cell.isCurrentMonth &&
+                    cell.day === new Date().getDate() &&
+                    currentDate.getMonth() === new Date().getMonth() &&
+                    currentDate.getFullYear() === new Date().getFullYear();
 
-                      return (
-                        <td
-                          key={colIndex}
-                          onClick={() => handleDayClick(cell.day, cell.isCurrentMonth)}
-                          className={`
-                            calendar__day-cell p-2 text-center border
-                            ${cell.isCurrentMonth ? 'text-gray-800' : 'text-gray-400'}
-                            ${isToday ? 'bg-yellow-100 font-bold' : ''}
-                            ${cell.isCurrentMonth ? 'hover:bg-gray-100 cursor-pointer' : ''}
-                          `}
+                  // Filter events for the exact day and month, and only render for the current month
+                  const dayEvents = cell.isCurrentMonth
+                    ? events.filter((event) => {
+                        const eventStartDate = new Date(event.startDate);
+                        const eventEndDate = new Date(event.endDate);
+                        const cellDate = new Date(
+                          currentDate.getFullYear(),
+                          currentDate.getMonth(),
+                          cell.day
+                        );
+                        return (
+                          cellDate >= eventStartDate &&
+                          cellDate <= eventEndDate &&
+                          cellDate.getMonth() === currentDate.getMonth()
+                        );
+                      })
+                    : [];
+
+                  return (
+                    <div
+                      key={`${rowIndex}-${colIndex}`}
+                      onClick={() => handleDayClick(cell.day, cell.isCurrentMonth)}
+                      className={`
+                        p-2 rounded-lg border bg-white shadow-sm cursor-pointer
+                        ${cell.isCurrentMonth ? 'text-gray-800' : 'text-gray-400'}
+                        ${isToday ? 'border-blue-500 bg-blue-50' : ''}
+                        hover:shadow-md transition-shadow
+                      `}
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span
+                          className={`text-sm font-bold ${
+                            isToday ? 'text-blue-600' : ''
+                          }`}
                         >
                           {cell.day}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                        </span>
+                        {isToday && (
+                          <span className="text-xs text-blue-500 font-semibold">
+                            Today
+                          </span>
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        {dayEvents.slice(0, 3).map((event) => (
+                          <div
+                            key={event.id}
+                            className="bg-blue-100 text-blue-800 text-xs rounded px-2 py-1 truncate"
+                            title={event.title}
+                          >
+                            {event.title}
+                          </div>
+                        ))}
+                        {dayEvents.length > 3 && (
+                          <div className="text-xs text-gray-500">
+                            +{dayEvents.length - 3} more
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
         );
     }

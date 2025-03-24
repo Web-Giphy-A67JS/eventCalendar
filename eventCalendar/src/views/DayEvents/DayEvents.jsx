@@ -84,80 +84,125 @@ export default function DayEvents() {
   };
 
   return (
-    <div className="p-8 body-bg font-sans">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between mb-4">
+    <div className="p-12 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        {/* Header Section */}
+        <div className="flex justify-between items-center mb-6">
           <button
             onClick={() => navigate('/calendar')}
-            className="btn btn-outline"
+            className="btn btn-outline btn-sm"
           >
             Back to Calendar
           </button>
           <button
             onClick={() => navigate(`/create-event?startDate=${date}`)}
-            className="btn btn-primary"
+            className="btn btn-primary btn-sm"
           >
             Create Event
           </button>
         </div>
-        <h1 className="text-3xl font-bold mb-8">Events for {format(new Date(date), "MMMM d, yyyy")}</h1>
-        <div className="hourly-timeline">
+  
+        {/* Title */}
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">
+          Events for {format(new Date(date), "MMMM d, yyyy")}
+        </h1>
+  
+        {/* Hourly Timeline */}
+        <div className="space-y-4">
           {Array.from({ length: 24 }, (_, hour) => (
-            <div key={hour} className="hour-slot">
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">{format(new Date().setHours(hour), "h:00 a")}</span>
-                <span className="font-semibold">{format(new Date().setHours(hour + 1), "h:00 a")}</span>
+            <div key={hour} className="border-b border-gray-200 pb-4">
+              {/* Hour Slot */}
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-600">
+                  {format(new Date().setHours(hour), "h:00 a")}
+                </span>
+                <span className="text-sm font-medium text-gray-600">
+                  {format(new Date().setHours(hour + 1), "h:00 a")}
+                </span>
               </div>
-              {events
-                .filter((event) => parseISO(event.startDate).getHours() === hour)
-                .map((event) => (
-                  <div key={event.id} className="event-block" onClick={() => toggleEventDetails(event.id)}>
-                    <div className="event-title">{event.title}</div>
-                    <div className="event-time">
-                      {format(parseISO(event.startDate), "h:mm a")} - {format(parseISO(event.endDate), "h:mm a")}
-                    </div>
-                    <div className="event-icons">
-                      <svg
-                        className="w-5 h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent event block onclick
-                          handleEditEvent(event.id);
-                        }}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732zM6 16a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
-                      </svg>
-                      <svg
-                        className="w-5 h-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        onClick={(e) => {
-                          e.stopPropagation(); // Prevent event block onclick
-                          handleDeleteEvent(event.id);
-                        }}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.981-1.818L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </div>
-                    <div className="event-details hidden">
-                      <div className="event-description">{event.description}</div>
-                      <div className="event-participants">
-                        Participants: {event.participants.length}
-                        <svg className="inline-block w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a3 3 0 00-6 0v1zm0 0H9v-1a2 2 0 014 0v1z" />
-                        </svg>
+  
+              {/* Events for the Hour */}
+              <div className="space-y-2">
+                {events
+                  .filter((event) => parseISO(event.startDate).getHours() === hour)
+                  .map((event) => (
+                    <div
+                      key={event.id}
+                      className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer"
+                      onClick={() => toggleEventDetails(event.id)}
+                    >
+                      {/* Event Title */}
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-semibold text-gray-800">
+                          {event.title}
+                        </h3>
+                        <div className="flex space-x-2">
+                          {/* Edit Icon */}
+                          <svg
+                            className="w-5 h-5 text-gray-500 hover:text-gray-700 cursor-pointer"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent event block onclick
+                              handleEditEvent(event.id);
+                            }}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732zM6 16a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"
+                            />
+                          </svg>
+                          {/* Delete Icon */}
+                          <svg
+                            className="w-5 h-5 text-red-500 hover:text-red-700 cursor-pointer"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent event block onclick
+                              handleDeleteEvent(event.id);
+                            }}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.981-1.818L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </div>
                       </div>
-                      {event.recurrence && (
-                        <div className="event-recurrence">Recurrence: {event.recurrence.frequency}</div>
+  
+                      {/* Event Time */}
+                      <p className="text-sm text-gray-600">
+                        {format(parseISO(event.startDate), "h:mm a")} -{" "}
+                        {format(parseISO(event.endDate), "h:mm a")}
+                      </p>
+  
+                      {/* Event Details */}
+                      {event.showDetails && (
+                        <div className="mt-2 text-sm text-gray-700">
+                          <p>{event.description}</p>
+                          <p className="mt-1">
+                            <span className="font-medium">Participants:</span>{" "}
+                            {event.participants.length}
+                          </p>
+                          {event.recurrence && (
+                            <p className="mt-1">
+                              <span className="font-medium">Recurrence:</span>{" "}
+                              {event.recurrence.frequency}
+                            </p>
+                          )}
+                        </div>
                       )}
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
           ))}
         </div>
