@@ -83,20 +83,33 @@ const Calendar = () => {
                     currentDate.getMonth() === new Date().getMonth() &&
                     currentDate.getFullYear() === new Date().getFullYear();
 
-                  // Filter events for the exact day and month, and only render for the current month
+                  // Filter events that span multiple days and belong to the current month
                   const dayEvents = cell.isCurrentMonth
                     ? events.filter((event) => {
                         const eventStartDate = new Date(event.startDate);
                         const eventEndDate = new Date(event.endDate);
+
+                        // Normalize dates to midnight
+                        const normalizedEventStartDate = new Date(
+                          eventStartDate.getFullYear(),
+                          eventStartDate.getMonth(),
+                          eventStartDate.getDate()
+                        );
+                        const normalizedEventEndDate = new Date(
+                          eventEndDate.getFullYear(),
+                          eventEndDate.getMonth(),
+                          eventEndDate.getDate()
+                        );
                         const cellDate = new Date(
                           currentDate.getFullYear(),
                           currentDate.getMonth(),
                           cell.day
                         );
+
                         return (
-                          cellDate >= eventStartDate &&
-                          cellDate <= eventEndDate &&
-                          cellDate.getMonth() === currentDate.getMonth()
+                          cellDate.getTime() >= normalizedEventStartDate.getTime() && // Include the start date
+                          cellDate.getTime() <= normalizedEventEndDate.getTime() && // Include the end date
+                          cellDate.getMonth() === currentDate.getMonth() // Ensure it's in the current month
                         );
                       })
                     : [];

@@ -84,7 +84,7 @@ export default function DayEvents() {
   };
 
   return (
-    <div className="p-12 bg-gray-50 min-h-screen">
+    <div className="p-12 bg-gray-50 min-h-screen min-h-[700px] w-[1000px]">
       <div className="max-w-6xl mx-auto">
         {/* Header Section */}
         <div className="flex justify-between items-center mb-6">
