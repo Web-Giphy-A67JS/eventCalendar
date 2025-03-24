@@ -1,16 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DayView from './calendarViews/DayView';
-import WeekView from './calendarViews/WeekView';
+import WeekView from './calendarViews/WeekView'; // Fixed import typo
 import WorkWeekView from './calendarViews/WorkWeekView';
 import { format } from 'date-fns';
+import { fetchEvents } from '../../../services/event.services'; // Replace with your actual service
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedView, setSelectedView] = useState('month'); // Default view
   const [animationClass, setAnimationClass] = useState('');
-
+  const [events, setEvents] = useState([]);
   const navigate = useNavigate();
+
+  // Fetch events when the component mounts
+  useEffect(() => {
+    const loadEvents = async () => {
+      try {
+        const fetchedEvents = await fetchEvents(); // Assume this returns events like [{ id, title, startDate, endDate }]
+        setEvents(fetchedEvents);
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+      }
+    };
+    loadEvents();
+  }, []);
 
   const navigateMonth = (direction) => {
     setAnimationClass(direction === 'prev' ? 'slide-left' : 'slide-right');
@@ -24,22 +38,22 @@ const Calendar = () => {
     if (isCurrentMonth) {
       const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const formattedDate = format(clickedDate, 'yyyy-MM-dd');
-      navigate(`/create-event?startDate=${formattedDate}`);
+      navigate(`/day-events?date=${formattedDate}`); // Updated to match DayEvents.jsx
     }
   };
 
-    const handleNewEventClick = () => {
-        navigate('/create-event');
-    }
+  const handleNewEventClick = () => {
+    navigate('/create-event');
+  };
 
   const renderView = () => {
     switch (selectedView) {
       case 'day':
-        return <DayView currentDate={currentDate} events={[]} />;
+        return <DayView currentDate={currentDate} events={events} />;
       case 'week':
-        return <WeekView currentDate={currentDate} events={[]} />;
+        return <WeekView currentDate={currentDate} events={events} />;
       case 'work-week':
-        return <WorkWeekView currentDate={currentDate} events={[]} />;
+        return <WorkWeekView currentDate={currentDate} events={events} />;
       case 'month':
       default:
         return (
@@ -99,7 +113,7 @@ const Calendar = () => {
             onClick={() => navigateMonth('prev')}
             className="calendar__nav-button btn btn-ghost"
           >
-            {'<Previous'}
+            {'< Previous'}
           </button>
           <button
             onClick={() => setCurrentDate(new Date())}
@@ -111,14 +125,14 @@ const Calendar = () => {
             onClick={() => navigateMonth('next')}
             className="calendar__nav-button btn btn-ghost"
           >
-            {'Next>'}
+            {'Next >'}
           </button>
-                    <button
-                        onClick={handleNewEventClick}
-                        className="calendar__create-event-button btn btn-primary"
-                    >
-                        Create Event
-                    </button>
+          <button
+            onClick={handleNewEventClick}
+            className="calendar__create-event-button btn btn-primary"
+          >
+            Create Event
+          </button>
         </div>
       </div>
 
@@ -154,7 +168,7 @@ const Calendar = () => {
   );
 };
 
-// Matrix generator from user's original code
+// Matrix generator for the calendar
 const generateCalendarMatrix = (year, month) => {
   const firstDay = new Date(year, month, 1);
   const startDay = firstDay.getDay();

@@ -5,6 +5,7 @@
 import React from 'react';
 import { format } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 /**
  * DayView component.
@@ -45,6 +46,10 @@ const DayView = ({ currentDate, events }) => {
       )}
     </div>
   );
+};
+DayView.propTypes = {
+  currentDate: PropTypes.instanceOf(Date).isRequired,
+  events: PropTypes.array.isRequired,
 };
 
 export default DayView;
