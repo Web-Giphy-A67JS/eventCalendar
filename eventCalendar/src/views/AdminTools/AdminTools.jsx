@@ -82,14 +82,18 @@ export default function AdminTools() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-center text-indigo-700 mb-6">Admin Tools</h1>
-      <p className="text-lg text-center mb-6 text-gray-600">Manage users and their roles from this dashboard.</p>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center text-primary mb-4">Admin Tools</h1>
+      <p className="text-center text-muted mb-8">Manage users and their roles from this dashboard.</p>
 
       {/* Notification Toast */}
       {notification && (
         <div
-          className={`toast-center ${notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'} p-4 rounded-lg shadow-lg fixed top-16 left-1/2 transform -translate-x-1/2`}
+          className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 rounded-lg shadow-lg ${
+            notification.type === 'success'
+              ? 'bg-green-500 text-white'
+              : 'bg-red-500 text-white'
+          } transition-all duration-300 animate-fade-in`}
         >
           <div className="flex items-center">
             <span className="font-bold">{notification.type === 'success' ? 'Success' : 'Error'}</span>
@@ -98,98 +102,81 @@ export default function AdminTools() {
         </div>
       )}
 
-      <div className="bg-white shadow-md p-6 rounded-lg mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="method"
-                id="username"
-                value="username"
-                checked={searchMethod === 'username'}
-                onChange={(e) => setSearchParams({ method: e.target.value, search })}
-                className="radio radio-primary"
-              />
-              <label htmlFor="username" className="font-medium text-gray-700">Username</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="method"
-                id="email"
-                value="email"
-                checked={searchMethod === 'email'}
-                onChange={(e) => setSearchParams({ method: e.target.value, search })}
-                className="radio radio-primary"
-              />
-              <label htmlFor="email" className="font-medium text-gray-700">Email</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="method"
-                id="firstname"
-                value="firstname"
-                checked={searchMethod === 'firstname'}
-                onChange={(e) => setSearchParams({ method: e.target.value, search })}
-                className="radio radio-primary"
-              />
-              <label htmlFor="firstname" className="font-medium text-gray-700">First name</label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="method"
-                id="lastname"
-                value="lastname"
-                checked={searchMethod === 'lastname'}
-                onChange={(e) => setSearchParams({ method: e.target.value, search })}
-                className="radio radio-primary"
-              />
-              <label htmlFor="lastname" className="font-medium text-gray-700">Last name</label>
-            </div>
+      <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-wrap gap-4">
+            {['username', 'email', 'firstname', 'lastname'].map((method) => (
+              <div key={method} className="flex items-center">
+                <input
+                  type="radio"
+                  name="method"
+                  id={method}
+                  value={method}
+                  checked={searchMethod === method}
+                  onChange={(e) => setSearchParams({ method: e.target.value, search })}
+                  className="h-4 w-4 text-primary focus:ring-primary border-gray-300"
+                />
+                <label htmlFor={method} className="ml-2 text-sm font-medium text-text capitalize">
+                  {method === 'firstname' ? 'First name' :
+                   method === 'lastname' ? 'Last name' : method}
+                </label>
+              </div>
+            ))}
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="relative flex-1 max-w-md">
             <input
               type="text"
-              className="input input-bordered input-primary w-full max-w-xs ml-2 bg-white"
+              className="block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300"
               placeholder={`Search by ${searchMethod}...`}
               value={search}
               onChange={(e) => setSearchParams({ method: searchMethod, search: e.target.value })}
             />
-            <i className="text-lg text-gray-500">🔍</i>
+            <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+              </svg>
+            </div>
           </div>
         </div>
 
         {users.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="table w-full table-striped">
-              <thead>
-                <tr className="bg-indigo-100 text-indigo-700">
-                  <th>Username</th>
-                  <th>Full name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Actions</th>
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text uppercase tracking-wider">Username</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text uppercase tracking-wider">Full name</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text uppercase tracking-wider">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-text uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-white divide-y divide-gray-200">
                 {users.map((user) => (
-                  <tr key={user.uid}>
-                    <td>{user.handle}</td>
-                    <td>{user.firstName} {user.lastName}</td>
-                    <td>{user.email}</td>
-                    <td>
-                      <span className={getRoleBadgeClass(user.role)}>
+                  <tr key={user.uid} className="hover:bg-gray-50 transition duration-150">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text">{user.handle}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text">
+                      {user.firstName} {user.lastName}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        user.role === Roles.admin ? 'bg-green-100 text-green-800' :
+                        user.role === Roles.banned ? 'bg-red-100 text-red-800' :
+                        'bg-blue-100 text-blue-800'
+                      }`}>
                         {user.role}
                       </span>
                     </td>
-                    <td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <button
-                        className={`btn ${user.role === Roles.banned ? 'btn-success' : 'btn-error'}`}
                         onClick={() => handleBan(user.uid)}
+                        className={`px-3 py-1 rounded-md text-white transition duration-300 ${
+                          user.role === Roles.banned
+                            ? 'bg-secondary hover:bg-green-600'
+                            : 'bg-red-500 hover:bg-red-600'
+                        }`}
                       >
                         {user.role === Roles.banned ? 'Unban' : 'Ban'}
                       </button>
@@ -200,7 +187,9 @@ export default function AdminTools() {
             </table>
           </div>
         ) : (
-          <p className="text-center text-gray-600 mt-4">No users found with this {searchMethod}</p>
+          <div className="text-center py-8">
+            <p className="text-muted">No users found with this {searchMethod}</p>
+          </div>
         )}
       </div>
     </div>

@@ -76,9 +76,9 @@ export default function CreateEventPage() {
   const currentParticipants = event.participants.map((uid) => users.find((user) => user.uid === uid)).filter(Boolean);
 
   return (
-    <div className="pt-16 pb-10">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-full sm:w-96 max-w-sm">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-text mb-6">
           {eventId ? "Edit Event" : "Create Event"}
         </h2>
         <EventForm
@@ -198,85 +198,79 @@ function EventForm({
   return (
     <form onSubmit={handleCreateOrUpdateEvent} className="space-y-6">
       {/* Title */}
-      <div className="form-group">
-        <label className="block text-lg font-medium text-gray-700" htmlFor="title">
+      <div>
+        <label className="block text-sm font-medium text-text" htmlFor="title">
           Title <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
+        <div className="mt-1 relative">
           <input
             type="text"
-            className={`form-input w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${error && !event.title ? 'border-red-500' : ''}`}
+            className={`block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300 ${error && !event.title ? 'border-red-500' : ''}`}
             id="title"
             placeholder="Enter event title"
             value={event.title}
             onChange={updateEventField("title")}
             required
           />
-          <span className="absolute top-1/2 right-5 transform -translate-y-1/2 text-gray-500">🏷️</span>
         </div>
       </div>
 
       {/* Start Date */}
-      <div className="form-group">
-        <label className="block text-lg font-medium text-gray-700" htmlFor="startDate">
+      <div>
+        <label className="block text-sm font-medium text-text" htmlFor="startDate">
           Start Date <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
+        <div className="mt-1">
           <input
             type="datetime-local"
-            className={`form-input w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${error && !event.startDate ? 'border-red-500' : ''}`}
+            className={`block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300 ${error && !event.startDate ? 'border-red-500' : ''}`}
             id="startDate"
             value={event.startDate}
             onChange={updateEventField("startDate")}
             required
           />
-          <span className="absolute top-1/2 right-5 transform -translate-y-1/2 text-gray-500">📅</span>
         </div>
       </div>
 
       {/* End Date */}
-      <div className="form-group">
-        <label className="block text-lg font-medium text-gray-700" htmlFor="endDate">
+      <div>
+        <label className="block text-sm font-medium text-text" htmlFor="endDate">
           End Date <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
+        <div className="mt-1">
           <input
             type="datetime-local"
-            className={`form-input w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${error && !event.endDate ? 'border-red-500' : ''}`}
+            className={`block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300 ${error && !event.endDate ? 'border-red-500' : ''}`}
             id="endDate"
             value={event.endDate}
             onChange={updateEventField("endDate")}
             required
           />
-          <span className="absolute top-1/2 right-5 transform -translate-y-1/2 text-gray-500">📅</span>
         </div>
       </div>
 
       {/* Description */}
-      <div className="form-group">
-        <label className="block text-lg font-medium text-gray-700" htmlFor="description">
+      <div>
+        <label className="block text-sm font-medium text-text" htmlFor="description">
           Description <span className="text-red-500">*</span>
         </label>
-        <div className="relative">
-          <textarea
-            className={`form-input w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 ${error && !event.description ? 'border-red-500' : ''}`}
-            id="description"
-            placeholder="Enter event description"
-            value={event.description}
-            onChange={updateEventField("description")}
-            required
-          />
-          <span className="absolute top-1/2 right-5 transform -translate-y-1/2 text-gray-500">📝</span>
-        </div>
+        <textarea
+          className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300 ${error && !event.description ? 'border-red-500' : ''}`}
+          id="description"
+          placeholder="Enter event description"
+          value={event.description}
+          onChange={updateEventField("description")}
+          required
+        />
       </div>
 
       {/* Recurrence Frequency */}
       <div>
-        <label className="block text-lg font-medium text-gray-700">Recurrence Frequency</label>
+        <label className="block text-sm font-medium text-text">Recurrence Frequency</label>
         <select
           value={event.recurrence.frequency}
           onChange={(e) => setEvent({ ...event, recurrence: { ...event.recurrence, frequency: e.target.value } })}
-          className="form-select w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300"
         >
           <option value="">None</option>
           <option value="weekly">Weekly</option>
@@ -289,7 +283,7 @@ function EventForm({
       {event.recurrence.frequency && (
         <>
           <div>
-            <label className="block text-lg font-medium text-gray-700">Interval</label>
+            <label className="block text-sm font-medium text-text">Interval</label>
             <input
               type="number"
               value={event.recurrence.interval}
@@ -300,14 +294,16 @@ function EventForm({
                 })
               }
               min="1"
-              className="form-input w-full p-3 border border-gray-300 bg-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-primary focus:border-primary transition duration-300"
             />
           </div>
           <div className="mt-4">
-            <h3 className="text-sm font-medium">Preview of recurring dates:</h3>
-            <ul className="list-disc pl-5">
+            <h3 className="text-sm font-medium text-text">Preview of recurring dates:</h3>
+            <ul className="mt-2 space-y-1">
               {previewDates.map((date, index) => (
-                <li key={index}>{format(date, "MMMM d, yyyy")}</li>
+                <li key={index} className="text-sm text-gray-600">
+                  {format(date, "MMMM d, yyyy")}
+                </li>
               ))}
             </ul>
           </div>
@@ -315,27 +311,29 @@ function EventForm({
       )}
 
       {/* Private event setting */}
-      <div className="form-group flex items-center">
-        <label className="block text-lg font-medium text-gray-700 mr-2" htmlFor="private">
+      <div className="flex items-center">
+        <label className="block text-sm font-medium text-text mr-2" htmlFor="private">
           Private
         </label>
         <input
           type="checkbox"
           id="private"
           checked={isPrivate}
-          className="form-checkbox text-indigo-600 focus:ring-indigo-500"
+          className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
           onChange={(e) => setIsPrivate(e.target.checked)}
         />
       </div>
 
       {/* Current Participants */}
-      <div className="form-group">
-        <label className="block text-lg font-medium text-gray-700">
+      <div>
+        <label className="block text-sm font-medium text-text">
           Current Participants
         </label>
-        <ul className="list-disc pl-5">
+        <ul className="mt-2 space-y-1">
           {currentParticipants.map((participant) => (
-            <li key={participant.uid}>{participant.handle}</li>
+            <li key={participant.uid} className="text-sm text-gray-600">
+              {participant.handle}
+            </li>
           ))}
         </ul>
       </div>
@@ -344,15 +342,26 @@ function EventForm({
       {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
       {/* Buttons */}
-      <div className="flex justify-between">
-        <button type="submit" className="btn btn-primary w-24">
-          {eventId ? "Update Edits" : "Create Event"}
-        </button>
-        <button type="button" className="btn btn-secondary w-24" onClick={() => setIsModalOpen(true)}>
-          Edit Participants
-        </button>
-        <button type="button" className="btn btn-outline w-24" onClick={() => navigate("/calendar")}>
+      <div className="flex justify-end space-x-4">
+        <button
+          type="button"
+          onClick={() => navigate("/calendar")}
+          className="btn bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300"
+        >
           Cancel
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="btn bg-secondary text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300"
+        >
+          Add Participants
+        </button>
+        <button
+          type="submit"
+          className="btn bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 transform hover:scale-105"
+        >
+          {eventId ? "Update" : "Create"}
         </button>
       </div>
     </form>

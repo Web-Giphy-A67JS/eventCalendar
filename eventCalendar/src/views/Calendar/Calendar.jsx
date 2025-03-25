@@ -10,7 +10,6 @@ import { AppContext } from "../../store/app.context";
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedView, setSelectedView] = useState("month");
-  const [animationClass, setAnimationClass] = useState("");
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
   const { user } = useContext(AppContext);
@@ -86,7 +85,7 @@ const Calendar = () => {
       case "month":
       default:
         return (
-          <div className={`calendar__month-view ${animationClass}`}>
+          <div className="calendar__month-view">
             <div className="grid grid-cols-7 gap-2 bg-gray-100 p-4 rounded-lg shadow-md">
               {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                 <div
@@ -191,84 +190,69 @@ const Calendar = () => {
   };
 
   return (
-    <div className="calendar p-4 max-w-4xl mx-auto">
-      <div className="calendar__header flex justify-between items-center mb-4">
-        <h2 className="calendar__title text-xl font-semibold">
+    <div className="p-6 max-w-6xl mx-auto">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <h2 className="text-2xl font-bold text-primary">
           {format(currentDate, "MMMM yyyy")}
         </h2>
-        <div className="calendar__navigation space-x-2">
-          <button
-            onClick={() =>
-              selectedView === "day"
-                ? navigateDay(-1)
-                : selectedView === "month"
-                ? navigateMonth(-1)
-                : navigateWeek(-1)
-            }
-            className="calendar__nav-button btn btn-ghost"
-          >
-            {"< Previous"}
-          </button>
-          <button
-            onClick={() => setCurrentDate(new Date())}
-            className="calendar__today-button btn btn-ghost"
-          >
-            Today
-          </button>
-          <button
-            onClick={() =>
-              selectedView === "day"
-                ? navigateDay(1)
-                : selectedView === "month"
-                ? navigateMonth(1)
-                : navigateWeek(1)
-            }
-            className="calendar__nav-button btn btn-ghost"
-          >
-            {"Next >"}
-          </button>
+        
+        <div className="flex items-center gap-2">
+          <div className="flex border border-gray-200 rounded-md overflow-hidden">
+            <button
+              onClick={() =>
+                selectedView === "day"
+                  ? navigateDay(-1)
+                  : selectedView === "month"
+                  ? navigateMonth(-1)
+                  : navigateWeek(-1)
+              }
+              className="px-4 py-2 bg-white text-text hover:bg-gray-50 transition duration-200"
+            >
+              {"< Previous"}
+            </button>
+            <button
+              onClick={() => setCurrentDate(new Date())}
+              className="px-4 py-2 bg-white text-text hover:bg-gray-50 transition duration-200 border-l border-r border-gray-200"
+            >
+              Today
+            </button>
+            <button
+              onClick={() =>
+                selectedView === "day"
+                  ? navigateDay(1)
+                  : selectedView === "month"
+                  ? navigateMonth(1)
+                  : navigateWeek(1)
+              }
+              className="px-4 py-2 bg-white text-text hover:bg-gray-50 transition duration-200"
+            >
+              {"Next >"}
+            </button>
+          </div>
+          
           <button
             onClick={handleNewEventClick}
-            className="calendar__create-event-button btn btn-primary"
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600 transition duration-200 transform hover:scale-105"
           >
             Create Event
           </button>
         </div>
       </div>
 
-      <div className="calendar__view-switcher flex justify-center space-x-4 mb-4">
-        <button
-          onClick={() => setSelectedView("day")}
-          className={`calendar__view-button btn ${
-            selectedView === "day" ? "btn-active" : "btn-ghost"
-          }`}
-        >
-          Day
-        </button>
-        <button
-          onClick={() => setSelectedView("week")}
-          className={`calendar__view-button btn ${
-            selectedView === "week" ? "btn-active" : "btn-ghost"
-          }`}
-        >
-          Week
-        </button>
-        <button
-          onClick={() => setSelectedView("work-week")}
-          className={`calendar__view-button btn ${
-            selectedView === "work-week" ? "btn-active" : "btn-ghost"
-          }`}
-        >
-          Work Week
-        </button>
-        <button
-          onClick={() => setSelectedView("month")}
-          className={`calendar__view-button btn ${
-            selectedView === "month" ? "btn-active" : "btn-ghost"
-          }`}
-        >
-          Month
-        </button>
+      <div className="flex justify-center gap-2 mb-6">
+        {["day", "week", "work-week", "month"].map((view) => (
+          <button
+            key={view}
+            onClick={() => setSelectedView(view)}
+            className={`px-4 py-2 rounded-md transition duration-200 ${
+              selectedView === view
+                ? "bg-primary text-white"
+                : "bg-white text-text hover:bg-gray-100"
+            }`}
+          >
+            {view === "work-week" ? "Work Week" : view.charAt(0).toUpperCase() + view.slice(1)}
+          </button>
+        ))}
       </div>
 
       {renderView()}

@@ -67,57 +67,61 @@ export default function Events() {
   };
 
   return (
-    <div className="p-8 mx-auto bg-gray-50 rounded-lg shadow-lg min-h-[700px] w-[1000px]">
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex space-x-4">
+    <div className="p-8 mx-auto bg-background rounded-xl shadow-lg min-h-[700px] max-w-7xl">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+        <div className="flex space-x-2">
           {user && (
             <button
-              className={`btn ${
-                view === "myEvents" ? "btn-primary" : "btn-outline"
-              } btn-lg`}
+              className={`px-4 py-2 rounded-md font-medium transition duration-300 ease-in-out ${
+                view === "myEvents"
+                  ? "bg-primary text-white hover:bg-blue-600"
+                  : "border border-gray-300 text-text hover:bg-gray-100"
+              }`}
               onClick={() => setView("myEvents")}
             >
               My Events
             </button>
           )}
           <button
-            className={`btn ${
-              view === "allEvents" ? "btn-primary" : "btn-outline"
-            } btn-lg`}
+            className={`px-4 py-2 rounded-md font-medium transition duration-300 ease-in-out ${
+              view === "allEvents"
+                ? "bg-primary text-white hover:bg-blue-600"
+                : "border border-gray-300 text-text hover:bg-gray-100"
+            }`}
             onClick={() => setView("allEvents")}
           >
             All Events
           </button>
         </div>
-        <div className="w-full max-w-md">
+        <div className="w-full md:w-auto md:min-w-[300px]">
           <input
             type="text"
-            className="input input-bordered w-full bg-white text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-indigo-500"
+            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary transition duration-300"
             placeholder="Search events by title..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event) => (
             <div
               key={event.id}
-              className="p-6 border rounded-lg shadow-md bg-white hover:shadow-lg transition-shadow duration-300"
+              className="event-card bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out"
             >
-              <h3 className="text-xl font-semibold text-indigo-600 mb-2">
+              <h3 className="text-lg font-semibold text-text mb-2">
                 {event.title}
               </h3>
-              <p className="text-sm text-gray-500 mb-2">
+              <p className="text-sm text-gray-600 mb-2">
                 <span className="font-medium">Start:</span>{" "}
                 {new Date(event.startDate).toLocaleString()}
               </p>
-              <p className="text-sm text-gray-500 mb-2">
+              <p className="text-sm text-gray-600 mb-2">
                 <span className="font-medium">End:</span>{" "}
                 {new Date(event.endDate).toLocaleString()}
               </p>
-              <p className="text-sm text-gray-500 mb-2">
+              <p className="text-sm text-gray-600 mb-2">
                 <span className="font-medium">Participants:</span>{" "}
                 {event.participants.length}
               </p>
@@ -128,11 +132,11 @@ export default function Events() {
               >
                 {event.private ? "Private Event" : "Public Event"}
               </p>
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-end mt-4 space-x-2">
                 {(userData?.role === Roles.admin ||
                   event.participants[0] === user?.uid) && (
                   <button
-                    className="btn btn-sm btn-outline btn-info"
+                    className="bg-primary text-white px-3 py-1 rounded-md hover:bg-blue-600 transition duration-300"
                     onClick={() => handleEdit(event)}
                   >
                     Edit
@@ -141,7 +145,7 @@ export default function Events() {
                 {(userData?.role === Roles.admin ||
                   event.participants[0] === user?.uid) && (
                   <button
-                    className="btn btn-sm btn-outline btn-error"
+                    className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-300"
                     onClick={() => handleDelete(event.id)}
                   >
                     Delete
@@ -152,7 +156,7 @@ export default function Events() {
           ))
         ) : (
           <div className="flex items-center justify-center col-span-full min-h-[400px]">
-            <p className="text-gray-600 text-center">No events found.</p>
+            <p className="text-gray-600">No events found.</p>
           </div>
         )}
       </div>
