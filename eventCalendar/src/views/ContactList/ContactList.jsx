@@ -133,84 +133,85 @@ const ContactList = ({ user }) => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-2xl shadow-lg max-w-xl mx-auto mt-6">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">📋 Contact Lists</h2>
-      
-      <button
-        onClick={handleCreateList}
-        className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-md hover:scale-105"
-      >
-        ➕ Create New List
-      </button>
-
-      <div className="mt-6">
-        {contactLists.length > 0 ? (
-          <ul className="space-y-2">
-            {contactLists.map((list) => (
-              <li
-                key={list.id}
-                onClick={() => setSelectedListId(list.id)}
-                className={`cursor-pointer px-4 py-2 rounded-lg transition-all 
-                  ${
-                    selectedListId === list.id
-                      ? "bg-blue-100 text-blue-600 font-semibold shadow-md"
-                      : "hover:bg-gray-100 text-gray-700"
-                  }`}
-              >
-                {list.name}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">No contact lists found.</p>
-        )}
-      </div>
-
-      {selectedListId && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-xl shadow-md">
-          <h3 className="text-lg font-semibold text-gray-800">
-            Selected List: {contactLists.find((list) => list.id === selectedListId)?.name}
-          </h3>
-
-          {isEditing ? (
-            <div className="mt-3">
-              <input
-                type="text"
-                placeholder="New List Name"
-                value={newListName}
-                onChange={(e) => setNewListName(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={handleUpdateListName}
-                  className="flex-1 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all shadow-md hover:scale-105"
-                >
-                  ✅ Update
-                </button>
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="flex-1 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:scale-105"
-                >
-                  ❌ Cancel
-                </button>
-              </div>
-            </div>
-          ) : (
+    <div className="p-8 bg-gradient-to-b from-blue-50 to-white rounded-3xl shadow-2xl max-w-2xl mx-auto mt-8">
+    <h2 className="text-3xl font-extrabold mb-6 text-center text-gray-800">
+      📋 Contact Lists
+    </h2>
+  
+  <button
+    onClick={handleCreateList}
+    className="w-full py-2 px-4 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all shadow-md hover:scale-105"
+  >
+    ➕ Create New List
+  </button>
+  
+    <div className="mt-6 grid grid-cols-1 gap-4">
+      {contactLists.length > 0 ? (
+        contactLists.map((list) => (
+          <div
+            key={list.id}
+            onClick={() => setSelectedListId(list.id)}
+            className={`p-6 rounded-xl shadow-lg cursor-pointer transition-all transform hover:scale-105 hover:shadow-2xl 
+              ${
+                selectedListId === list.id
+                  ? "bg-blue-200 text-blue-800 font-semibold scale-105"
+                  : "bg-white hover:bg-gray-50 text-gray-700"
+              }`}
+          >
+            <h3 className="text-xl font-semibold flex items-center gap-2">
+              📁 {list.name}
+            </h3>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-500 text-center">No contact lists found.</p>
+      )}
+    </div>
+  
+    {selectedListId && (
+      <div className="mt-8 p-6 bg-white rounded-3xl shadow-lg">
+        <h3 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+          📌 {contactLists.find((list) => list.id === selectedListId)?.name}
+        </h3>
+  
+        {isEditing ? (
+          <div className="mt-3 flex gap-2">
+            <input
+              type="text"
+              placeholder="New List Name"
+              value={newListName}
+              onChange={(e) => setNewListName(e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400"
+            />
             <button
-              onClick={() => setIsEditing(true)}
-              className="mt-3 w-full py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all shadow-md hover:scale-105"
+              onClick={handleUpdateListName}
+              className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all shadow-md hover:scale-105"
             >
-              ✏️ Edit List Name
+              ✅ Save
             </button>
-          )}
-
-          <h3 className="text-lg font-semibold text-gray-800 mt-6">👥 Add Contact</h3>
-
+            <button
+              onClick={() => setIsEditing(false)}
+              className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:scale-105"
+            >
+              ❌ Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="mt-3 w-full py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all shadow-md hover:scale-105"
+          >
+            ✏️ Edit List Name
+          </button>
+        )}
+  
+        <h3 className="text-lg font-semibold text-gray-800 mt-6">👥 Add Contact</h3>
+  
+        <div className="flex gap-3 items-center mt-2">
           <select
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg mt-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="flex-1 p-2 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-400"
           >
             <option value="">Select a user</option>
             {existingUsers.map((user) => (
@@ -219,45 +220,53 @@ const ContactList = ({ user }) => {
               </option>
             ))}
           </select>
-
+  
           <button
             onClick={handleAddContact}
-            className="mt-3 w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all shadow-md hover:scale-105"
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all shadow-md hover:scale-105"
           >
-            ➕ Add Contact
-          </button>
-
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold text-gray-800">📜 Contacts in this list</h3>
-            <ul className="mt-2 space-y-3">
-              {getContactsForSelectedList(selectedListId).map((contact, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200"
-                >
-                  <div className="text-gray-700">
-                    {contact.name} - <span className="text-gray-500">{contact.email}</span>
-                  </div>
-                  <button
-                    onClick={() => handleRemoveContact(contact.email)}
-                    className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-all shadow-md"
-                  >
-                    ❌
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <button
-            onClick={handleDeleteList}
-            className="mt-6 w-full py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-md hover:scale-105"
-          >
-            🗑 Delete List
+            ➕ Add
           </button>
         </div>
-      )}
-    </div>
+  
+        <h3 className="text-lg font-semibold text-gray-800 mt-6">
+          📜 Contacts in this list
+        </h3>
+        <ul className="mt-4 space-y-4">
+          {getContactsForSelectedList(selectedListId).map((contact, index) => (
+            <li
+              key={index}
+              className="flex justify-between items-center p-4 bg-white rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+                  {contact.name.charAt(0)}
+                </div>
+                <div className="text-gray-700">
+                  <p className="font-semibold">{contact.name}</p>
+                  <p className="text-gray-500 text-sm">{contact.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => handleRemoveContact(contact.email)}
+                className="px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all shadow-md"
+              >
+                ❌
+              </button>
+            </li>
+          ))}
+        </ul>
+  
+        <button
+          onClick={handleDeleteList}
+          className="mt-6 w-full py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-md hover:scale-105"
+        >
+          🗑 Delete List
+        </button>
+      </div>
+    )}
+  </div>
+  
   );
 };
 
