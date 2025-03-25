@@ -12,38 +12,61 @@ const WorkWeekView = ({ currentDate, events }) => {
   };
 
   return (
-    <div className="work-week-view grid grid-cols-5 gap-2 p-4">
-      {workDays.map((day) => {
-        const dayEvents = events.filter((event) => {
-          const eventStartDate = new Date(event.startDate);
-          const eventEndDate = new Date(event.endDate);
-
-          return (
-            day >= new Date(eventStartDate.getFullYear(), eventStartDate.getMonth(), eventStartDate.getDate()) &&
-            day <= new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), eventEndDate.getDate())
-          );
-        });
-
-        return (
+    <div className="work-week-view bg-base-100 rounded-lg shadow-md p-4">
+      {/* Work Week Header */}
+      <div className="grid grid-cols-5 gap-2 mb-4">
+        {workDays.map((day) => (
           <div
             key={day.toString()}
-            className={`work-week-view__day border p-2 h-32 overflow-auto bg-white rounded shadow-md cursor-pointer ${
-              isSameDay(day, new Date()) ? "bg-yellow-100" : ""
+            className={`text-center font-semibold text-sm p-2 rounded ${
+              isSameDay(day, new Date()) ? "bg-blue-100 text-blue-600" : "text-white"
             }`}
-            onClick={() => handleDayClick(day)}
           >
-            <div className="work-week-view__day-header text-sm font-semibold">{format(day, "EEE d")}</div>
-            {dayEvents.map((event) => (
-              <div
-                key={event.id}
-                className="work-week-view__event block text-xs bg-blue-100 p-1 mt-1 rounded hover:underline"
-              >
-                {event.title}
-              </div>
-            ))}
+            {format(day, "EEE d")}
           </div>
-        );
-      })}
+        ))}
+      </div>
+
+      {/* Work Week Grid */}
+      <div className="grid grid-cols-5 gap-2">
+        {workDays.map((day) => {
+          const dayEvents = events.filter((event) => {
+            const eventStartDate = new Date(event.startDate);
+            const eventEndDate = new Date(event.endDate);
+
+            return (
+              day >= new Date(eventStartDate.getFullYear(), eventStartDate.getMonth(), eventStartDate.getDate()) &&
+              day <= new Date(eventEndDate.getFullYear(), eventEndDate.getMonth(), eventEndDate.getDate())
+            );
+          });
+
+          return (
+            <div
+              key={day.toString()}
+              className={`border rounded-lg p-2 h-48 overflow-auto bg-white shadow-sm hover:shadow-md transition-shadow ${
+                isSameDay(day, new Date()) ? "border-blue-500" : "border-gray-200"
+              }`}
+              onClick={() => handleDayClick(day)}
+            >
+              {dayEvents.length > 0 ? (
+                <ul className="space-y-2">
+                  {dayEvents.map((event) => (
+                    <li
+                      key={event.id}
+                      className="bg-blue-100 text-blue-800 text-xs rounded px-2 py-1 truncate hover:bg-blue-200 transition"
+                      title={event.title}
+                    >
+                      {event.title}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-xs text-gray-400 text-center">No events</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

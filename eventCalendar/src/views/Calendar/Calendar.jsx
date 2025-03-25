@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DayView from './calendarViews/DayView';
 import WeekView from './calendarViews/WeekView';
 import WorkWeekView from './calendarViews/WorkWeekView';
-import { format } from 'date-fns';
+import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { fetchEvents } from '../../../services/event.services';
 import { AppContext } from '../../store/app.context';
 
@@ -32,6 +32,12 @@ const Calendar = () => {
       loadEvents();
     }
   }, [userId]);
+
+  const navigateWeek = (direction) => {
+    setCurrentDate((prevDate) =>
+      new Date(prevDate.getFullYear(), prevDate.getMonth(), prevDate.getDate() + direction * 7)
+    );
+  };
 
   const navigateMonth = (direction) => {
     setAnimationClass(direction === 'prev' ? 'slide-left' : 'slide-right');
@@ -169,7 +175,7 @@ const Calendar = () => {
         </h2>
         <div className="calendar__navigation space-x-2">
           <button
-            onClick={() => navigateMonth('prev')}
+            onClick={() => navigateWeek(-1)}
             className="calendar__nav-button btn btn-ghost"
           >
             {'< Previous'}
@@ -181,7 +187,7 @@ const Calendar = () => {
             Today
           </button>
           <button
-            onClick={() => navigateMonth('next')}
+            onClick={() => navigateWeek(1)}
             className="calendar__nav-button btn btn-ghost"
           >
             {'Next >'}
