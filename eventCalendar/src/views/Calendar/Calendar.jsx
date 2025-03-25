@@ -261,6 +261,17 @@ const Calendar = () => {
   );
 };
 
+/**
+ * Generates a matrix representing a calendar for a given month and year.
+ * Each cell in the matrix contains information about the day and whether it belongs to the current month.
+ *
+ * @param {number} year - The year for which the calendar is generated.
+ * @param {number} month - The month (0-based, where 0 = January, 11 = December) for which the calendar is generated.
+ * @returns {Array<Array<{ day: number, isCurrentMonth: boolean }>>} A 6x7 matrix representing the calendar.
+ * Each element is an object with:
+ *   - `day`: The day of the month.
+ *   - `isCurrentMonth`: A boolean indicating if the day belongs to the current month.
+ */
 const generateCalendarMatrix = (year, month) => {
   const firstDay = new Date(year, month, 1);
   const startDay = firstDay.getDay();

@@ -13,7 +13,7 @@ export default function CreateEventPage() {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const eventId = searchParams.get("eventId"); // Check if editing
+  const eventId = searchParams.get("eventId");
   const startDateFromParams = searchParams.get("startDate");
 
   useEffect(() => {
@@ -32,12 +32,10 @@ export default function CreateEventPage() {
   const [error, setError] = useState("");
   const [previewDates, setPreviewDates] = useState([]);
 
-  // Fetch event data for editing
   useEffect(() => {
     if (eventId) {
       getEventById(eventId)
         .then((eventData) => {
-          // Format startDate and endDate for datetime-local
           const formattedStartDate = format(parseISO(eventData.startDate), "yyyy-MM-dd'T'HH:mm");
           const formattedEndDate = format(parseISO(eventData.endDate), "yyyy-MM-dd'T'HH:mm");
         setEvent({
@@ -56,13 +54,13 @@ export default function CreateEventPage() {
   const generatePreviewDates = () => {
     if (event.recurrence.frequency && event.startDate) {
       const endDate = new Date(event.startDate);
-      endDate.setFullYear(endDate.getFullYear() + 1); // Preview up to 1 year
+      endDate.setFullYear(endDate.getFullYear() + 1);
       const dates = generateRecurringDates(
         event.startDate,
         event.recurrence.frequency,
         event.recurrence.interval,
         endDate
-      ).slice(0, 12); // Limit to 12 dates
+      ).slice(0, 12);
       setPreviewDates(dates);
     } else {
       setPreviewDates([]);
@@ -144,8 +142,6 @@ function EventForm({
       setError("The description must be between 10 and 500 characters!");
       return;
     }
-
-    // Validation for recurrence settings
     const validateRecurrence = () => {
       if (event.recurrence.frequency) {
         if (!Number.isInteger(event.recurrence.interval) || event.recurrence.interval < 1) {
@@ -166,11 +162,9 @@ function EventForm({
 
     try {
       if (eventId) {
-        // Update existing event
         await updateEvent(eventId, event);
         alert("Event updated successfully!");
       } else {
-        // Create new event
         await createEvent(
           event.title,
           event.startDate,
@@ -197,7 +191,6 @@ function EventForm({
 
   return (
     <form onSubmit={handleCreateOrUpdateEvent} className="space-y-6">
-      {/* Title */}
       <div>
         <label className="block text-sm font-medium text-text" htmlFor="title">
           Title <span className="text-red-500">*</span>
@@ -214,8 +207,6 @@ function EventForm({
           />
         </div>
       </div>
-
-      {/* Start Date */}
       <div>
         <label className="block text-sm font-medium text-text" htmlFor="startDate">
           Start Date <span className="text-red-500">*</span>
@@ -231,8 +222,6 @@ function EventForm({
           />
         </div>
       </div>
-
-      {/* End Date */}
       <div>
         <label className="block text-sm font-medium text-text" htmlFor="endDate">
           End Date <span className="text-red-500">*</span>
@@ -248,8 +237,6 @@ function EventForm({
           />
         </div>
       </div>
-
-      {/* Description */}
       <div>
         <label className="block text-sm font-medium text-text" htmlFor="description">
           Description <span className="text-red-500">*</span>
@@ -263,8 +250,6 @@ function EventForm({
           required
         />
       </div>
-
-      {/* Recurrence Frequency */}
       <div>
         <label className="block text-sm font-medium text-text">Recurrence Frequency</label>
         <select
@@ -278,8 +263,6 @@ function EventForm({
           <option value="yearly">Yearly</option>
         </select>
       </div>
-
-      {/* Recurrence Interval */}
       {event.recurrence.frequency && (
         <>
           <div>
@@ -309,8 +292,6 @@ function EventForm({
           </div>
         </>
       )}
-
-      {/* Private event setting */}
       <div className="flex items-center">
         <label className="block text-sm font-medium text-text mr-2" htmlFor="private">
           Private
@@ -323,8 +304,6 @@ function EventForm({
           onChange={(e) => setIsPrivate(e.target.checked)}
         />
       </div>
-
-      {/* Current Participants */}
       <div>
         <label className="block text-sm font-medium text-text">
           Current Participants
@@ -337,11 +316,7 @@ function EventForm({
           ))}
         </ul>
       </div>
-
-      {/* Error Message */}
       {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-      {/* Buttons */}
       <div className="flex justify-end space-x-4">
         <button
           type="button"

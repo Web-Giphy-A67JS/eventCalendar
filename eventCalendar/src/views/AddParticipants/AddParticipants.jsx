@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllUsers } from "../../../services/user.services";
 import { getUserContactLists, getContactsFromList } from "../../../services/user.services"; 
+import PropTypes from "prop-types";
 
 export default function AddParticipantsModal({ isOpen, onClose, onAddParticipants, initialParticipants, creatorId }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,7 +34,6 @@ export default function AddParticipantsModal({ isOpen, onClose, onAddParticipant
   };
   
   useEffect(() => {
-    // Ensure the creator is always in the selected users list
     if (!selectedUsers.some((u) => u.uid === creatorId)) {
       const creator = users.find((user) => user.uid === creatorId);
       if (creator) {
@@ -160,3 +160,17 @@ export default function AddParticipantsModal({ isOpen, onClose, onAddParticipant
 </div>
   );
 }
+
+AddParticipantsModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onAddParticipants: PropTypes.func.isRequired,
+  initialParticipants: PropTypes.arrayOf(
+    PropTypes.shape({
+      uid: PropTypes.string.isRequired,
+      handle: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+    })
+  ),
+  creatorId: PropTypes.string.isRequired,
+};

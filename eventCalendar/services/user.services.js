@@ -111,6 +111,16 @@ export const getAllUsersByEmail = async (search='') => {
   return {};
 };
 
+/**
+ * Retrieves all users from the database, optionally filtering by first name.
+ *
+ * @async
+ * @function getAllUsersByFirstName
+ * @param {string} [search=''] - The search string to filter users by their first name. 
+ *                               If empty, all users will be returned.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of user objects 
+ *                              matching the search criteria, or an empty object if no users exist.
+ */
 export const getAllUsersByFirstName = async (search='') => {
   const snapshot = await get(ref(db, 'users'));
   if (snapshot.exists()) {
@@ -123,6 +133,17 @@ export const getAllUsersByFirstName = async (search='') => {
   return {};
 };
 
+/**
+ * Retrieves all users from the database, optionally filtering by last name.
+ *
+ * @async
+ * @function getAllUsersByLastName
+ * @param {string} [search=''] - The search string to filter users by last name. 
+ *                               If empty, all users are returned.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of user objects 
+ *                              filtered by last name, or all users if no search string is provided.
+ *                              If no users exist, an empty object is returned.
+ */
 export const getAllUsersByLastName = async (search='') => {
   const snapshot = await get(ref(db, 'users'));
   if (snapshot.exists()) {
@@ -180,6 +201,14 @@ export const updateUser = async (handle, userData) => {
   await update(userRef, userData);
 };
 
+/**
+ * Retrieves a user from the database by their phone number.
+ *
+ * @async
+ * @function getUserByPhone
+ * @param {string} phone - The phone number of the user to retrieve.
+ * @returns {Promise<Object|null>} A promise that resolves to the user object if found, or null if no user exists with the given phone number.
+ */
 export const getUserByPhone = async (phone) => {
     const snapshot = await get(query(ref(db, 'users'), orderByChild('phone'), equalTo(phone)));
     if (snapshot.exists()) {
@@ -189,6 +218,19 @@ export const getUserByPhone = async (phone) => {
     }
     return null;
   };
+  /**
+   * Creates a new contact list for a user and saves it to the database.
+   *
+   * @async
+   * @function createContactList
+   * @param {string} userId - The ID of the user who owns the contact list.
+   * @param {string} listName - The name of the contact list to be created.
+   * @returns {Promise<Object>} A promise that resolves to the newly created contact list object.
+   * @property {string} id - The unique identifier of the contact list.
+   * @property {string} owner - The ID of the user who owns the contact list.
+   * @property {string} name - The name of the contact list.
+   * @property {Array} contacts - An empty array representing the contacts in the list.
+   */
   export const createContactList = async (userId, listName) => {
     const listRef = push(ref(db, "contactLists"));
 
@@ -203,6 +245,15 @@ export const getUserByPhone = async (phone) => {
     return newList;
 };
 
+/**
+ * Adds a contact to a specified contact list in the database if it does not already exist.
+ *
+ * @async
+ * @function addContactToList
+ * @param {string} listId - The ID of the contact list to which the contact will be added.
+ * @param {string} contactId - The ID of the contact to add to the list.
+ * @returns {Promise<void>} A promise that resolves when the contact has been added to the list.
+ */
 export const addContactToList = async (listId, contactId) => {
     const listRef = ref(db, `contactLists/${listId}/contacts`);
 
@@ -215,6 +266,16 @@ export const addContactToList = async (listId, contactId) => {
     }
 };
 
+/**
+ * Retrieves the contact lists for a specific user from the database.
+ *
+ * @async
+ * @function getUserContactLists
+ * @param {string} userId - The ID of the user whose contact lists are to be fetched.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of contact lists owned by the user.
+ *                              Returns an empty array if no contact lists are found or an error occurs.
+ * @throws {Error} Logs an error message to the console if fetching contact lists fails.
+ */
 export const getUserContactLists = async (userId) => {
     try {
         const snapshot = await get(ref(db, "contactLists"));
@@ -229,6 +290,17 @@ export const getUserContactLists = async (userId) => {
     }
 };
 
+/**
+ * Updates a contact list in the database with the provided data.
+ *
+ * @async
+ * @function updateContactList
+ * @param {string} listId - The unique identifier of the contact list to update.
+ * @param {Object} updatedData - The data to update the contact list with.
+ * @returns {Promise<Object>} A promise that resolves to an object indicating the success or failure of the operation.
+ * @property {boolean} success - Indicates whether the update was successful.
+ * @property {Error} [error] - The error object if the update failed.
+ */
 export const updateContactList = async (listId, updatedData) => {
     try {
         await update(ref(db, `contactLists/${listId}`), updatedData);
@@ -244,6 +316,16 @@ export const deleteContactList = async (listId) => {
     await remove(listRef);
 };
 
+/**
+ * Removes a contact from a specified contact list in the database.
+ *
+ * @async
+ * @function removeContactFromList
+ * @param {string} listId - The unique identifier of the contact list.
+ * @param {string} contactEmail - The email of the contact to be removed.
+ * @returns {Promise<void>} Resolves when the contact is successfully removed from the list.
+ * @throws {Error} Throws an error if there is an issue accessing or updating the database.
+ */
 export const removeContactFromList = async (listId, contactEmail) => {
   const listRef = ref(db, `contactLists/${listId}/contacts`);
   const snapshot = await get(listRef);
@@ -269,6 +351,16 @@ export const getParticipantsDetails = async (participantIds) => {
     .filter(Boolean); // Filter out unmatched users
 };
 
+/**
+ * Retrieves the contacts from a specified contact list in the database.
+ *
+ * @async
+ * @function getContactsFromList
+ * @param {string} listId - The unique identifier of the contact list.
+ * @returns {Promise<Array>} A promise that resolves to an array of contacts. 
+ *                           Returns an empty array if the list does not exist or an error occurs.
+ * @throws {Error} Logs an error message to the console if fetching contacts fails.
+ */
 export const getContactsFromList = async (listId) => {
   try {
       const listRef = ref(db, `contactLists/${listId}/contacts`);

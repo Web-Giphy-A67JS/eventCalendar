@@ -67,7 +67,7 @@ export default function Events() {
   };
 
   return (
-    <div className="p-8 mx-auto bg-background rounded-xl shadow-lg min-h-[700px] max-w-7xl">
+    <div className="p-8 mx-auto bg-background rounded-xl shadow-lg min-h-[700px] min-w-[1000px]">
       <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
         <div className="flex space-x-2">
           {user && (

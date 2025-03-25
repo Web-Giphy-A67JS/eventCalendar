@@ -35,19 +35,36 @@ export default function AdminTools() {
     };
   
     fetchUsers();
-  }, [search, searchMethod]);  // Triggers when search or searchMethod changes
+  }, [search, searchMethod]);
   
-  
-  // Effect to clear the notification after 5 seconds
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => {
-        setNotification(null);  // Clear the notification
+        setNotification(null);
       }, 5000);
-      return () => clearTimeout(timer);  // Cleanup the timer if notification changes
+      return () => clearTimeout(timer);
     }
   }, [notification]);
 
+  /**
+   * Handles banning or unbanning a user based on their current role.
+   * If the user is currently banned, they will be unbanned, and vice versa.
+   *
+   * @async
+   * @function handleBan
+   * @param {string} uid - The unique identifier of the user to be banned or unbanned.
+   * @returns {Promise<void>} - A promise that resolves when the user's role has been updated.
+   * @throws {Error} - Throws an error if the role update fails.
+   *
+   * @example
+   * // Ban a user with a specific UID
+   * handleBan('user123');
+   *
+   * @description
+   * This function finds the user by their UID, toggles their role between `Roles.banned` and `Roles.user`,
+   * updates the user's role in the database, and updates the local state. It also sets a notification
+   * to indicate the success or failure of the operation.
+   */
   const handleBan = async (uid) => {
     try {
       const user = users.find((u) => u.uid === uid);
@@ -75,7 +92,6 @@ export default function AdminTools() {
       <h1 className="text-3xl font-bold text-center text-primary mb-4">Admin Tools</h1>
       <p className="text-center text-muted mb-8">Manage users and their roles from this dashboard.</p>
 
-      {/* Notification Toast */}
       {notification && (
         <div
           className={`fixed top-4 left-1/2 transform -translate-x-1/2 z-50 p-4 rounded-lg shadow-lg ${
