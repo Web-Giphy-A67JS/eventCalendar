@@ -18,9 +18,9 @@ const ContactList = ({ user }) => {
   const [existingUsers, setExistingUsers] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  if (!user) return <p>Loading user...</p>;
-
   useEffect(() => {
+    if (!user) return;
+
     const fetchData = async () => {
       if (!user?.uid) return;
 
@@ -37,6 +37,8 @@ const ContactList = ({ user }) => {
 
     fetchData();
   }, [user]);
+
+  if (!user) return <p>Loading user...</p>;
 
   const handleCreateList = async () => {
     if (!user?.uid) return;
