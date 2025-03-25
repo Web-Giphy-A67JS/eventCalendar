@@ -1,16 +1,16 @@
-import { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DayView from './calendarViews/DayView';
-import WeekView from './calendarViews/WeekView';
-import WorkWeekView from './calendarViews/WorkWeekView';
-import { format, startOfWeek, endOfWeek } from 'date-fns';
-import { fetchEvents } from '../../../services/event.services';
-import { AppContext } from '../../store/app.context';
+import { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import DayView from "./calendarViews/DayView";
+import WeekView from "./calendarViews/WeekView";
+import WorkWeekView from "./calendarViews/WorkWeekView";
+import { format } from "date-fns";
+import { fetchEvents } from "../../../services/event.services";
+import { AppContext } from "../../store/app.context";
 
 const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedView, setSelectedView] = useState('month');
-  const [animationClass, setAnimationClass] = useState('');
+  const [selectedView, setSelectedView] = useState("month");
+  const [animationClass, setAnimationClass] = useState("");
   const [events, setEvents] = useState([]);
   const navigate = useNavigate();
   const { user } = useContext(AppContext);
@@ -25,7 +25,7 @@ const Calendar = () => {
         );
         setEvents(userEvents);
       } catch (error) {
-        console.error('Failed to fetch events:', error);
+        console.error("Failed to fetch events:", error);
       }
     };
     if (userId) {
@@ -35,44 +35,50 @@ const Calendar = () => {
 
   const navigateWeek = (direction) => {
     setCurrentDate((prevDate) =>
-      new Date(prevDate.getFullYear(), prevDate.getMonth(), prevDate.getDate() + direction * 7)
+      new Date(
+        prevDate.getFullYear(),
+        prevDate.getMonth(),
+        prevDate.getDate() + direction * 7
+      )
     );
   };
 
   const navigateMonth = (direction) => {
-    setAnimationClass(direction === 'prev' ? 'slide-left' : 'slide-right');
-    setTimeout(() => {
-      setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + (direction === 'prev' ? -1 : 1)));
-      setAnimationClass('');
-    }, 300);
+    setCurrentDate((prevDate) =>
+      new Date(prevDate.getFullYear(), prevDate.getMonth() + direction, 1)
+    );
   };
 
   const handleDayClick = (day, isCurrentMonth) => {
     if (isCurrentMonth) {
-      const clickedDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-      const formattedDate = format(clickedDate, 'yyyy-MM-dd');
+      const clickedDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        day
+      );
+      const formattedDate = format(clickedDate, "yyyy-MM-dd");
       navigate(`/day-events?date=${formattedDate}`);
     }
   };
 
   const handleNewEventClick = () => {
-    navigate('/create-event');
+    navigate("/create-event");
   };
 
   const renderView = () => {
     switch (selectedView) {
-      case 'day':
+      case "day":
         return <DayView currentDate={currentDate} events={events} />;
-      case 'week':
+      case "week":
         return <WeekView currentDate={currentDate} events={events} />;
-      case 'work-week':
+      case "work-week":
         return <WorkWeekView currentDate={currentDate} events={events} />;
-      case 'month':
+      case "month":
       default:
         return (
           <div className={`calendar__month-view ${animationClass}`}>
             <div className="grid grid-cols-7 gap-2 bg-gray-100 p-4 rounded-lg shadow-md">
-              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
                 <div
                   key={day}
                   className="text-center font-semibold text-gray-700 uppercase text-sm"
@@ -80,7 +86,10 @@ const Calendar = () => {
                   {day}
                 </div>
               ))}
-              {generateCalendarMatrix(currentDate.getFullYear(), currentDate.getMonth()).map((row, rowIndex) =>
+              {generateCalendarMatrix(
+                currentDate.getFullYear(),
+                currentDate.getMonth()
+              ).map((row, rowIndex) =>
                 row.map((cell, colIndex) => {
                   const isToday =
                     cell.isCurrentMonth &&
@@ -109,9 +118,11 @@ const Calendar = () => {
                         );
 
                         return (
-                          cellDate.getTime() >= normalizedEventStartDate.getTime() && 
-                          cellDate.getTime() <= normalizedEventEndDate.getTime() && 
-                          cellDate.getMonth() === currentDate.getMonth() 
+                          cellDate.getTime() >=
+                            normalizedEventStartDate.getTime() &&
+                          cellDate.getTime() <=
+                            normalizedEventEndDate.getTime() &&
+                          cellDate.getMonth() === currentDate.getMonth()
                         );
                       })
                     : [];
@@ -119,18 +130,20 @@ const Calendar = () => {
                   return (
                     <div
                       key={`${rowIndex}-${colIndex}`}
-                      onClick={() => handleDayClick(cell.day, cell.isCurrentMonth)}
+                      onClick={() =>
+                        handleDayClick(cell.day, cell.isCurrentMonth)
+                      }
                       className={`
                         p-2 rounded-lg border bg-white shadow-sm cursor-pointer
-                        ${cell.isCurrentMonth ? 'text-gray-800' : 'text-gray-400'}
-                        ${isToday ? 'border-blue-500 bg-blue-50' : ''}
+                        ${cell.isCurrentMonth ? "text-gray-800" : "text-gray-400"}
+                        ${isToday ? "border-blue-500 bg-blue-50" : ""}
                         hover:shadow-md transition-shadow
                       `}
                     >
                       <div className="flex justify-between items-center mb-2">
                         <span
                           className={`text-sm font-bold ${
-                            isToday ? 'text-blue-600' : ''
+                            isToday ? "text-blue-600" : ""
                           }`}
                         >
                           {cell.day}
@@ -171,14 +184,18 @@ const Calendar = () => {
     <div className="calendar p-4 max-w-4xl mx-auto">
       <div className="calendar__header flex justify-between items-center mb-4">
         <h2 className="calendar__title text-xl font-semibold">
-          {format(currentDate, 'MMMM yyyy')}
+          {format(currentDate, "MMMM yyyy")}
         </h2>
         <div className="calendar__navigation space-x-2">
           <button
-            onClick={() => navigateWeek(-1)}
+            onClick={() =>
+              selectedView === "month"
+                ? navigateMonth(-1)
+                : navigateWeek(-1)
+            }
             className="calendar__nav-button btn btn-ghost"
           >
-            {'< Previous'}
+            {"< Previous"}
           </button>
           <button
             onClick={() => setCurrentDate(new Date())}
@@ -187,10 +204,14 @@ const Calendar = () => {
             Today
           </button>
           <button
-            onClick={() => navigateWeek(1)}
+            onClick={() =>
+              selectedView === "month"
+                ? navigateMonth(1)
+                : navigateWeek(1)
+            }
             className="calendar__nav-button btn btn-ghost"
           >
-            {'Next >'}
+            {"Next >"}
           </button>
           <button
             onClick={handleNewEventClick}
@@ -203,26 +224,34 @@ const Calendar = () => {
 
       <div className="calendar__view-switcher flex justify-center space-x-4 mb-4">
         <button
-          onClick={() => setSelectedView('day')}
-          className={`calendar__view-button btn ${selectedView === 'day' ? 'btn-active' : 'btn-ghost'}`}
+          onClick={() => setSelectedView("day")}
+          className={`calendar__view-button btn ${
+            selectedView === "day" ? "btn-active" : "btn-ghost"
+          }`}
         >
           Day
         </button>
         <button
-          onClick={() => setSelectedView('week')}
-          className={`calendar__view-button btn ${selectedView === 'week' ? 'btn-active' : 'btn-ghost'}`}
+          onClick={() => setSelectedView("week")}
+          className={`calendar__view-button btn ${
+            selectedView === "week" ? "btn-active" : "btn-ghost"
+          }`}
         >
           Week
         </button>
         <button
-          onClick={() => setSelectedView('work-week')}
-          className={`calendar__view-button btn ${selectedView === 'work-week' ? 'btn-active' : 'btn-ghost'}`}
+          onClick={() => setSelectedView("work-week")}
+          className={`calendar__view-button btn ${
+            selectedView === "work-week" ? "btn-active" : "btn-ghost"
+          }`}
         >
           Work Week
         </button>
         <button
-          onClick={() => setSelectedView('month')}
-          className={`calendar__view-button btn ${selectedView === 'month' ? 'btn-active' : 'btn-ghost'}`}
+          onClick={() => setSelectedView("month")}
+          className={`calendar__view-button btn ${
+            selectedView === "month" ? "btn-active" : "btn-ghost"
+          }`}
         >
           Month
         </button>
