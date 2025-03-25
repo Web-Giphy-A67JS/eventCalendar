@@ -5,12 +5,10 @@ import PropTypes from 'prop-types';
 const DayView = ({ currentDate, events }) => {
   const navigate = useNavigate();
 
-  // Filter events that occur on the current day
   const dayEvents = events.filter((event) => {
     const eventStartDate = new Date(event.startDate);
     const eventEndDate = new Date(event.endDate);
 
-    // Check if the event overlaps with the current day
     return isWithinInterval(currentDate, {
       start: startOfDay(eventStartDate),
       end: endOfDay(eventEndDate),
