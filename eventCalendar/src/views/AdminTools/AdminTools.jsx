@@ -70,17 +70,6 @@ export default function AdminTools() {
     }
   };
 
-  const getRoleBadgeClass = (role) => {
-    switch (role) {
-      case Roles.admin:
-        return 'badge badge-success';
-      case Roles.banned:
-        return 'badge badge-error';
-      default:
-        return 'badge badge-primary';
-    }
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-center text-primary mb-4">Admin Tools</h1>

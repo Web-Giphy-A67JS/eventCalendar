@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from "react";
 import AddParticipantsModal from "../AddParticipants/AddParticipants";
 import { getParticipantsDetails } from "../../../services/user.services";
@@ -122,3 +123,15 @@ export default function EditEvent({ event, onClose, onSave }) {
     </div>
   );
 }
+
+EditEvent.propTypes = {
+  event: PropTypes.shape({
+    id: PropTypes.string,
+    startDate: PropTypes.string,
+    endDate: PropTypes.string,
+    description: PropTypes.string,
+    participants: PropTypes.arrayOf(PropTypes.string),
+  }),
+  onClose: PropTypes.func,
+  onSave: PropTypes.func,
+};

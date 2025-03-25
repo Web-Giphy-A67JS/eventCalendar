@@ -1,6 +1,6 @@
-import React from "react";
 import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
 const DayView = ({ currentDate, events }) => {
   const navigate = useNavigate();
@@ -52,6 +52,18 @@ const DayView = ({ currentDate, events }) => {
       )}
     </div>
   );
+};
+
+DayView.propTypes = {
+  currentDate: PropTypes.instanceOf(Date),
+  events: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+    })
+  ),
 };
 
 export default DayView;

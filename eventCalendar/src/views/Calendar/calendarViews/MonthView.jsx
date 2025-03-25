@@ -2,9 +2,9 @@
  * @fileoverview Month view component for the calendar.
  * Displays events for a month.
  */
-import React from 'react';
 import { getDaysInMonth, startOfMonth, addDays, format } from 'date-fns';
 import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 /**
  * MonthView component.
@@ -51,6 +51,18 @@ const MonthView = ({ currentDate, events }) => {
       })}
     </div>
   );
+};
+
+MonthView.propTypes = {
+  currentDate: PropTypes.instanceOf(Date),
+  events: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+    })
+  ),
 };
 
 export default MonthView;

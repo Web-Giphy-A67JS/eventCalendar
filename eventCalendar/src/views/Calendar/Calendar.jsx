@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import DayView from "./calendarViews/DayView";
@@ -294,6 +295,14 @@ const generateCalendarMatrix = (year, month) => {
   }
 
   return matrix;
+};
+
+Calendar.propTypes = {
+  currentDate: PropTypes.instanceOf(Date),
+  selectedView: PropTypes.string,
+  animationClass: PropTypes.string,
+  events: PropTypes.arrayOf(PropTypes.object),
+  user: PropTypes.object,
 };
 
 export default Calendar;
