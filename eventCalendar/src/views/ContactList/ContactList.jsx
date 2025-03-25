@@ -133,24 +133,31 @@ const ContactList = ({ user }) => {
   };
 
   return (
-    <div className="p-4 bg-white rounded shadow-md">
-      <h2 className="text-lg font-bold mb-2">Contact Lists</h2>
+    <div className="p-6 bg-white rounded-2xl shadow-lg max-w-xl mx-auto mt-6">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">📋 Contact Lists</h2>
+      
       <button
         onClick={handleCreateList}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-md hover:scale-105"
       >
-        Create New List
+        ➕ Create New List
       </button>
-      <div className="mt-4">
+
+      <div className="mt-6">
         {contactLists.length > 0 ? (
-          <ul>
+          <ul className="space-y-2">
             {contactLists.map((list) => (
               <li
                 key={list.id}
-                className="text-gray-700 cursor-pointer hover:underline"
                 onClick={() => setSelectedListId(list.id)}
+                className={`cursor-pointer px-4 py-2 rounded-lg transition-all 
+                  ${
+                    selectedListId === list.id
+                      ? "bg-blue-100 text-blue-600 font-semibold shadow-md"
+                      : "hover:bg-gray-100 text-gray-700"
+                  }`}
               >
-                {list.name} {selectedListId === list.id && "(selected)"}
+                {list.name}
               </li>
             ))}
           </ul>
@@ -160,51 +167,52 @@ const ContactList = ({ user }) => {
       </div>
 
       {selectedListId && (
-        <div className="mt-4">
-          <h3 className="text-md font-bold">
-            Selected List:{" "}
-            {contactLists.find((list) => list.id === selectedListId)?.name}
+        <div className="mt-6 p-4 bg-gray-50 rounded-xl shadow-md">
+          <h3 className="text-lg font-semibold text-gray-800">
+            Selected List: {contactLists.find((list) => list.id === selectedListId)?.name}
           </h3>
 
           {isEditing ? (
-            <>
+            <div className="mt-3">
               <input
                 type="text"
                 placeholder="New List Name"
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
-                className="block p-2 border border-gray-300 rounded w-full mt-2 bg-white"
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-              <button
-                onClick={handleUpdateListName}
-                className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
-              >
-                Update List Name
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="mt-2 ml-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-              >
-                Cancel
-              </button>
-            </>
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={handleUpdateListName}
+                  className="flex-1 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all shadow-md hover:scale-105"
+                >
+                  ✅ Update
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  className="flex-1 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all shadow-md hover:scale-105"
+                >
+                  ❌ Cancel
+                </button>
+              </div>
+            </div>
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="mt-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+              className="mt-3 w-full py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all shadow-md hover:scale-105"
             >
-              Edit List Name
+              ✏️ Edit List Name
             </button>
           )}
 
-          <h3 className="text-md font-bold mt-4">Add Contact</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mt-6">👥 Add Contact</h3>
 
           <select
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
-            className="block p-2 border border-gray-300 rounded w-full mt-2 bg-white"
+            className="w-full p-2 border border-gray-300 rounded-lg mt-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            <option value="">Select an existing user</option>
+            <option value="">Select a user</option>
             {existingUsers.map((user) => (
               <option key={user.id} value={user.id}>
                 {user.firstName} {user.lastName} ({user.email})
@@ -214,38 +222,38 @@ const ContactList = ({ user }) => {
 
           <button
             onClick={handleAddContact}
-            className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            className="mt-3 w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all shadow-md hover:scale-105"
           >
-            Add Contact
+            ➕ Add Contact
           </button>
 
-          <div className="mt-4">
-            <h3 className="text-md font-bold">Contacts in this list</h3>
-            <ul>
-              {getContactsForSelectedList(selectedListId).map(
-                (contact, index) => (
-                  <li
-                    key={index}
-                    className="text-gray-700 flex justify-between items-center"
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-gray-800">📜 Contacts in this list</h3>
+            <ul className="mt-2 space-y-3">
+              {getContactsForSelectedList(selectedListId).map((contact, index) => (
+                <li
+                  key={index}
+                  className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200"
+                >
+                  <div className="text-gray-700">
+                    {contact.name} - <span className="text-gray-500">{contact.email}</span>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveContact(contact.email)}
+                    className="ml-2 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-all shadow-md"
                   >
-                    {contact.name} - {contact.email}
-                    <button
-                      onClick={() => handleRemoveContact(contact.email)}
-                      className="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Remove
-                    </button>
-                  </li>
-                )
-              )}
+                    ❌
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
           <button
             onClick={handleDeleteList}
-            className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className="mt-6 w-full py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all shadow-md hover:scale-105"
           >
-            Delete List
+            🗑 Delete List
           </button>
         </div>
       )}
@@ -256,5 +264,4 @@ const ContactList = ({ user }) => {
 ContactList.propTypes = {
   user: PropTypes.object.isRequired,
 };
-
 export default ContactList;
