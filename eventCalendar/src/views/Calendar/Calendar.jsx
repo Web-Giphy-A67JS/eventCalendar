@@ -33,6 +33,16 @@ const Calendar = () => {
     }
   }, [userId]);
 
+  const navigateDay = (direction) => {
+    setCurrentDate((prevDate) =>
+      new Date(
+        prevDate.getFullYear(),
+        prevDate.getMonth(),
+        prevDate.getDate() + direction
+      )
+    );
+  };
+
   const navigateWeek = (direction) => {
     setCurrentDate((prevDate) =>
       new Date(
@@ -189,7 +199,9 @@ const Calendar = () => {
         <div className="calendar__navigation space-x-2">
           <button
             onClick={() =>
-              selectedView === "month"
+              selectedView === "day"
+                ? navigateDay(-1)
+                : selectedView === "month"
                 ? navigateMonth(-1)
                 : navigateWeek(-1)
             }
@@ -205,7 +217,9 @@ const Calendar = () => {
           </button>
           <button
             onClick={() =>
-              selectedView === "month"
+              selectedView === "day"
+                ? navigateDay(1)
+                : selectedView === "month"
                 ? navigateMonth(1)
                 : navigateWeek(1)
             }
