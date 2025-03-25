@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isSameDay } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
@@ -70,6 +71,18 @@ const WeekView = ({ currentDate, events }) => {
       </div>
     </div>
   );
+};
+
+WeekView.propTypes = {
+  currentDate: PropTypes.instanceOf(Date),
+  events: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      title: PropTypes.string,
+      startDate: PropTypes.string,
+      endDate: PropTypes.string,
+    })
+  ),
 };
 
 export default WeekView;
