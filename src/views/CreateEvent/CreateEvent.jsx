@@ -6,6 +6,15 @@ import AddParticipantsModal from "../AddParticipants/AddParticipants";
 import { getAllUsers } from "../../../services/user.services";
 import { format, parseISO } from "date-fns";
 import PropTypes from 'prop-types';
+import { PATHS } from "../../config/paths";
+
+
+
+// Validation Constants
+const MIN_TITLE_LENGTH = 3;
+const MAX_TITLE_LENGTH = 30;
+const MIN_DESCRIPTION_LENGTH = 10;
+const MAX_DESCRIPTION_LENGTH = 500;
 
 export default function CreateEventPage() {
   const { user } = useContext(AppContext);
@@ -128,8 +137,8 @@ function EventForm({
     e.preventDefault();
     setError("");
 
-    if (event.title.length < 3 || event.title.length > 30) {
-      setError("The title must be between 3 and 30 characters!");
+    if (event.title.length < MIN_TITLE_LENGTH || event.title.length > MAX_TITLE_LENGTH) {
+      setError(`The title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters!`);
       return;
     }
 
@@ -138,8 +147,8 @@ function EventForm({
       return;
     }
 
-    if (event.description.length < 10 || event.description.length > 500) {
-      setError("The description must be between 10 and 500 characters!");
+    if (event.description.length < MIN_DESCRIPTION_LENGTH || event.description.length > MAX_DESCRIPTION_LENGTH) {
+      setError(`The description must be between ${MIN_DESCRIPTION_LENGTH} and ${MAX_DESCRIPTION_LENGTH} characters!`);
       return;
     }
     const validateRecurrence = () => {
@@ -320,7 +329,7 @@ function EventForm({
       <div className="flex justify-end space-x-4">
         <button
           type="button"
-          onClick={() => navigate("/calendar")}
+          onClick={() => navigate(PATHS.CALENDAR)}
           className="btn bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition duration-300"
         >
           Cancel

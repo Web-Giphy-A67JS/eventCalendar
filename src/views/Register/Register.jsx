@@ -5,6 +5,16 @@ import { registerUser } from "../../../services/auth.services";
 import { createUserHandle, getUserByHandle, getUserByPhone } from "../../../services/user.services";
 import { Roles } from "../../../common/roles.enum";
 
+
+// Validation Constants
+const MIN_NAME_LENGTH = 1;
+const MAX_NAME_LENGTH = 30;
+const MIN_HANDLE_LENGTH = 3;
+const MAX_HANDLE_LENGTH = 30;
+const MIN_PASSWORD_LENGTH = 8;
+const MAX_PASSWORD_LENGTH = 30;
+const PHONE_NUMBER_LENGTH = 10;
+
 /**
  * User registration component
  * 
@@ -39,18 +49,18 @@ export default function Register() {
     try {
       const nameRegex = /^[A-Za-z]+$/;
 
-      if (user.firstName.length < 1 || user.firstName.length > 30 || !nameRegex.test(user.firstName)) {
-        setError("Your first name must be between 1 and 30 characters and include only letters");
+      if (user.firstName.length < MIN_NAME_LENGTH || user.firstName.length > MAX_NAME_LENGTH || !nameRegex.test(user.firstName)) {
+        setError(`Your first name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters and include only letters`);
         return;
       }
 
-      if (user.handle.length < 3 || user.handle.length > 30) {
-        setError("Your username must be between 3 and 30 characters");
+      if (user.handle.length < MIN_HANDLE_LENGTH || user.handle.length > MAX_HANDLE_LENGTH) {
+        setError(`Your username must be between ${MIN_HANDLE_LENGTH} and ${MAX_HANDLE_LENGTH} characters`);
         return;
       }
 
-      if (user.lastName.length < 1 || user.lastName.length > 30 || !nameRegex.test(user.lastName)) {
-        setError("Your last name must be between 1 and 30 characters and include only letters");
+      if (user.lastName.length < MIN_NAME_LENGTH || user.lastName.length > MAX_NAME_LENGTH || !nameRegex.test(user.lastName)) {
+        setError(`Your last name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters and include only letters`);
         return;
       }
 
@@ -59,8 +69,8 @@ export default function Register() {
         setError("This phone number is already in use");
         return;
       }
-      if (user.phone.length !== 10 || isNaN(user.phone)) {
-        setError("Please enter a valid phone number that is 10 digits long");
+      if (user.phone.length !== PHONE_NUMBER_LENGTH || isNaN(user.phone)) {
+        setError(`Please enter a valid phone number that is ${PHONE_NUMBER_LENGTH} digits long`);
         return;
       }
 
@@ -70,8 +80,8 @@ export default function Register() {
         return;
       }
 
-      if (user.password.length < 8 || user.password.length > 30 || !/[!@#$%^&*(),.?":{}|<>]/.test(user.password) || !/\d/.test(user.password)) {
-        setError("Your password must be between 8 and 30 characters, and include at least one symbol and one number");
+      if (user.password.length < MIN_PASSWORD_LENGTH || user.password.length > MAX_PASSWORD_LENGTH || !/[!@#$%^&*(),.?":{}|<>]/.test(user.password) || !/\d/.test(user.password)) {
+        setError(`Your password must be between ${MIN_PASSWORD_LENGTH} and ${MAX_PASSWORD_LENGTH} characters, and include at least one symbol and one number`);
         return;
       }
 

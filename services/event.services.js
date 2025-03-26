@@ -1,6 +1,9 @@
 import { ref, push, get, remove, update, set, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "../src/config/firebase.config";
 
+
+const DEFAULT_RETRY_ATTEMPTS = 3;
+
 /**
  * Saves an event to the database with a retry mechanism.
  *
@@ -11,7 +14,7 @@ import { db } from "../src/config/firebase.config";
  * @returns {Promise<string>} - A promise that resolves to the key of the newly saved event.
  * @throws {Error} - Throws an error if all retry attempts fail.
  */
-const saveEventWithRetry = async (eventData, retries = 3) => {
+const saveEventWithRetry = async (eventData, retries = DEFAULT_RETRY_ATTEMPTS) => {
   for (let i = 0; i < retries; i++) {
     try {
       const newEventRef = push(ref(db, "events"));

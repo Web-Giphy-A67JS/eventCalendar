@@ -7,6 +7,9 @@ import { ref, get, query, orderByChild, equalTo, update } from "firebase/databas
 import { db } from "../../../src/config/firebase.config";
 import { Roles } from "../../../common/roles.enum";
 
+
+const HOURS_IN_DAY = 24;
+
 export default function DayEvents() {
   const [searchParams] = useSearchParams();
   const date = searchParams.get("date") || format(new Date(), "yyyy-MM-dd");
@@ -98,7 +101,7 @@ export default function DayEvents() {
           Events for {format(new Date(date), "MMMM d, yyyy")}
         </h1>
         <div className="space-y-4">
-          {Array.from({ length: 24 }, (_, hour) => (
+          {Array.from({ length: HOURS_IN_DAY }, (_, hour) => (
             <div key={hour} className="border-b border-gray-200 pb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-600">

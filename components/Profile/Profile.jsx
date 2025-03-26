@@ -4,6 +4,11 @@ import { updateUser } from '../../services/user.services';
 import { storage } from '../../src/config/firebase.config';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
+
+// Validation Constants
+const MIN_NAME_LENGTH = 4;
+const MAX_NAME_LENGTH = 32;
+
 export default function Profile() {
   const { userData, setAppState } = useContext(AppContext);
   const [state, setState] = useState({
@@ -38,11 +43,11 @@ export default function Profile() {
       if (!userData || !userData.uid) {
         throw new Error('User data is not available');
       }
-      if (state.firstName.length < 4 || state.firstName.length > 32) {
-        return alert('First name must be between 4 and 32 characters');
+      if (state.firstName.length < MIN_NAME_LENGTH || state.firstName.length > MAX_NAME_LENGTH) {
+        return alert(`First name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`);
       }
-      if (state.lastName.length < 4 || state.lastName.length > 32) {
-        return alert('Last name must be between 4 and 32 characters');
+      if (state.lastName.length < MIN_NAME_LENGTH || state.lastName.length > MAX_NAME_LENGTH) {
+        return alert(`Last name must be between ${MIN_NAME_LENGTH} and ${MAX_NAME_LENGTH} characters`);
       }
       if (isNaN(state.phone)) {
         return alert('Please enter a valid phone number');
