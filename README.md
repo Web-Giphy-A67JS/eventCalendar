@@ -1,5 +1,8 @@
 # Event Calendar
 
+Hosted on Firebase Hosting at: 
+  - https://eventcalendar-a67.web.app/contact-list
+
 ## Setup
 
 - Clonign repository and then running npm install
