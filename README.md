@@ -1,7 +1,7 @@
 # Event Calendar
 
 Hosted on Firebase Hosting at: 
-  - https://eventcalendar-a67.web.app/contact-list
+  - https://eventcalendar-a67.web.app/
 
 ## Setup
 
