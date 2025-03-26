@@ -15,7 +15,6 @@ const WeekView = ({ currentDate, events }) => {
 
   return (
     <div className="week-view bg-base-100 rounded-lg shadow-md p-4">
-      {/* Week Header */}
       <div className="grid grid-cols-7 gap-2 mb-4">
         {days.map((day) => (
           <div
@@ -28,8 +27,6 @@ const WeekView = ({ currentDate, events }) => {
           </div>
         ))}
       </div>
-
-      {/* Week Grid */}
       <div className="grid grid-cols-7 gap-2">
         {days.map((day) => {
           const dayEvents = events.filter((event) => {

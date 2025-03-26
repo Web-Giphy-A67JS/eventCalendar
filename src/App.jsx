@@ -54,7 +54,7 @@ function App() {
     <BrowserRouter>
       <AppContext.Provider value = {{...appState, setAppState}}> 
         <Header></Header>
-        <main className="flex items-center justify-center min-h-screen pt-16 bg-gray-300 text-black"> {/* here we can edit basic common characteristics of all components(bg color, alignment, etc.) */}
+        <main className="flex items-center justify-center min-h-screen pt-16 bg-gray-300 text-black">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/user-profile" element={<Authenticated><Profile /></Authenticated>} />

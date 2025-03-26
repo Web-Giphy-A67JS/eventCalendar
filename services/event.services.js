@@ -1,6 +1,16 @@
 import { ref, push, get, remove, update, set, query, orderByChild, equalTo } from "firebase/database";
 import { db } from "../src/config/firebase.config";
 
+/**
+ * Saves an event to the database with a retry mechanism.
+ *
+ * @async
+ * @function saveEventWithRetry
+ * @param {Object} eventData - The event data to be saved.
+ * @param {number} [retries=3] - The number of retry attempts in case of failure.
+ * @returns {Promise<string>} - A promise that resolves to the key of the newly saved event.
+ * @throws {Error} - Throws an error if all retry attempts fail.
+ */
 const saveEventWithRetry = async (eventData, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -16,6 +26,22 @@ const saveEventWithRetry = async (eventData, retries = 3) => {
   }
 };
 
+/**
+ * Creates an event and saves it to the database. Supports recurring events.
+ *
+ * @async
+ * @function createEvent
+ * @param {string} title - The title of the event.
+ * @param {string} startDate - The start date and time of the event in ISO format.
+ * @param {string} endDate - The end date and time of the event in ISO format.
+ * @param {string} description - A description of the event.
+ * @param {string[]} participants - An array of participant IDs for the event.
+ * @param {boolean} isPrivate - Indicates whether the event is private.
+ * @param {Object} [recurrence] - Recurrence details for the event.
+ * @param {string} [recurrence.frequency] - The frequency of recurrence (e.g., "daily", "weekly").
+ * @param {number} [recurrence.interval] - The interval between recurrences.
+ * @returns {Promise<void>} Resolves when the event(s) have been successfully saved.
+ */
 export const createEvent = async (
   title,
   startDate,
@@ -64,6 +90,15 @@ export const createEvent = async (
   }
 };
 
+/**
+ * Generates an array of recurring dates based on the specified frequency and interval.
+ *
+ * @param {Date|string} startDate - The starting date of the recurrence. Can be a Date object or a string parsable by the Date constructor.
+ * @param {string} frequency - The frequency of recurrence. Supported values are "weekly", "monthly", and "yearly".
+ * @param {number} [interval=1] - The interval between recurrences. Defaults to 1.
+ * @param {Date|string} endDate - The ending date of the recurrence. Can be a Date object or a string parsable by the Date constructor.
+ * @returns {Date[]} An array of Date objects representing the recurring dates.
+ */
 export const generateRecurringDates = (startDate, frequency, interval = 1, endDate) => {
   const dates = [];
   let date = new Date(startDate);
@@ -98,6 +133,23 @@ export const fetchEvents = async () => {
   return [];
 };
 
+/**
+ * Updates an event in the database. If the event is part of a series, updates all events in the series
+ * based on the recurrence pattern and new event data.
+ *
+ * @async
+ * @function updateEvent
+ * @param {string} eventId - The unique identifier of the event to update.
+ * @param {Object} updatedEventData - The updated data for the event.
+ * @param {string} updatedEventData.startDate - The new start date of the event in ISO format.
+ * @param {string} updatedEventData.endDate - The new end date of the event in ISO format.
+ * @param {string} [updatedEventData.title] - The new title of the event.
+ * @param {string} [updatedEventData.description] - The new description of the event.
+ * @param {Object} [updatedEventData.recurrence] - The recurrence pattern for the event series.
+ * @param {string} [updatedEventData.recurrence.frequency] - The frequency of the recurrence (e.g., "daily", "weekly").
+ * @param {number} [updatedEventData.recurrence.interval] - The interval between recurrences.
+ * @throws {Error} Throws an error if the event is not found or if there is an issue updating the database.
+ */
 export const updateEvent = async (eventId, updatedEventData) => {
   try {
     const eventRef = ref(db, `events/${eventId}`);
@@ -177,6 +229,17 @@ export const getEventById = async (eventId) => {
   return null;
 };
 
+/**
+ * Retrieves the events associated with a specific user.
+ *
+ * @async
+ * @function getUserEvents
+ * @param {string} userId - The ID of the user whose events are to be fetched.
+ * @returns {Promise<Array<Object>>} A promise that resolves to an array of event objects
+ *                                   where the user is a participant. Each event object
+ *                                   includes its ID and other event details.
+ * @throws Will log an error to the console if there is an issue fetching the events.
+ */
 export const getUserEvents = async (userId) => {
   try {
     const snapshot = await get(ref(db, "events"));
