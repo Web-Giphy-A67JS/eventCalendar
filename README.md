@@ -170,7 +170,7 @@ Each user contains the following attributes:
 
 - We have created a .env file where we store all sensitive information related to the database
 - This file is local for every developer and is generally added to the .gitignore so that no unauthorized user can have full db access
-- For the purpose of this project, we have added the env file to the repository
+- Upon request, the file can be provided to anyone who wishes to run or review the project locally
 
 ## GIT
 
